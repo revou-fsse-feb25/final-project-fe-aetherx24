@@ -7,7 +7,7 @@ export default function DashboardLayout() {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 flex p-8">
+            <div className="flex-1 flex flex-col">
                 <DashboardHeader />
                 <div className="flex-1 flex p-8">
                     <div className="flex-1">
@@ -19,7 +19,7 @@ export default function DashboardLayout() {
                     </div>
                     <RightSidebar />
                 </div>
-            </main>
+            </div>
         </div>
     );
 }
