@@ -1,3 +1,5 @@
+"use client";
+
 import Sidebar from './Sidebar';
 import DashboardHeader from './DashboardHeader';
 import CourseCard from './CourseCard';
