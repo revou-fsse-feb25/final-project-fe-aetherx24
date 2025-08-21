@@ -1,4 +1,5 @@
 import { User } from '@/types';
+import Image from 'next/image';
 
 interface DashboardHeaderProps {
   user?: User;
@@ -17,10 +18,12 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 {user && (
                     <div className="flex items-center space-x-3">
                         {user.avatar && (
-                            <img 
+                            <Image 
                                 src={user.avatar} 
                                 alt={user.name}
-                                className="w-10 h-10 rounded-full"
+                                width={40}
+                                height={40}
+                                className="rounded-full"
                             />
                         )}
                         <div className="text-right">

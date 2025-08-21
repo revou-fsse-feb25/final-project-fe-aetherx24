@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface UseApiState<T> {
   data: T | null;
@@ -15,7 +15,7 @@ interface UseApiReturn<T> extends UseApiState<T> {
 
 export function useApi<T>(
   apiCall: () => Promise<T>,
-  dependencies: any[] = []
+  dependencies: unknown[] = []
 ): UseApiReturn<T> {
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
@@ -23,7 +23,7 @@ export function useApi<T>(
     error: null,
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const data = await apiCall();
@@ -35,11 +35,11 @@ export function useApi<T>(
         error: error instanceof Error ? error.message : 'An error occurred',
       });
     }
-  };
+  }, [apiCall]);
 
   useEffect(() => {
     fetchData();
-  }, dependencies);
+  }, [fetchData, ...dependencies]);
 
   const refetch = () => {
     fetchData();
