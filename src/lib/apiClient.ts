@@ -13,7 +13,16 @@ class ApiClient {
     };
 
     try {
-      const response = await fetch(url, config);
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+      const response = await fetch(url, {
+        ...config,
+        signal: controller.signal,
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`API Error: ${response.status} ${response.statusText}`);
@@ -22,6 +31,9 @@ class ApiClient {
       return await response.json();
     } catch (error) {
       console.error('API request failed:', error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timeout - the API is taking too long to respond');
+      }
       throw error;
     }
   }
