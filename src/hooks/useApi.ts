@@ -40,7 +40,7 @@ export function useApi<T>(
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, ...dependencies]);
+  }, [fetchData]);
 
   const refetch = () => {
     fetchData();
