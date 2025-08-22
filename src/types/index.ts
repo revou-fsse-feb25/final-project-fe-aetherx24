@@ -49,3 +49,14 @@ export interface DashboardData {
     averageGrade?: number;
   };
 }
+
+// Authentication response types
+export interface LoginResponse {
+  jwt_token: string;
+  user: User;
+}
+
+export interface RegisterResponse {
+  jwt_token: string;
+  user: User;
+}
