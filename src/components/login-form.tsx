@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,16 +12,9 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
   const { login, isAuthenticated } = useAuth();
 
-  // Redirect when authentication state changes
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log("User authenticated, redirecting to dashboard...");
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, router]);
+  // Note: Middleware will handle the redirect automatically when login succeeds
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +26,9 @@ export function LoginForm() {
         console.log("Attempting login...");
         // Use the auth hook for login
         await login({ email, password });
-        console.log("Login successful, waiting for auth state update...");
-        // The redirect will happen automatically via useEffect when isAuthenticated changes
+        console.log("Login successful! Middleware will handle redirect...");
+        // Trigger a page refresh to let middleware handle the redirect
+        window.location.href = "/dashboard";
       } else {
         setError("Please fill in all fields");
       }
