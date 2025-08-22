@@ -1,5 +1,8 @@
 import { 
   DashboardData, 
+  StudentDashboardData,
+  TeacherDashboardData,
+  AdminDashboardData,
   Course, 
   User, 
   TodoItem, 
@@ -23,31 +26,52 @@ class ApiClient {
     if (typeof window !== 'undefined') {
       // Client-side: try localStorage first, then cookies
       token = localStorage.getItem('jwt_token');
+      console.log('🔍 getAuthHeaders - localStorage token:', token ? 'EXISTS' : 'NOT FOUND');
       
       // If no token in localStorage, try to get from cookies
       if (!token) {
         const cookies = document.cookie.split(';');
+        console.log('🔍 getAuthHeaders - all cookies:', cookies);
         const jwtCookie = cookies.find(cookie => cookie.trim().startsWith('jwt_token='));
         if (jwtCookie) {
           token = jwtCookie.split('=')[1];
+          console.log('🔍 getAuthHeaders - found token in cookies:', token ? 'EXISTS' : 'NOT FOUND');
+        } else {
+          console.log('🔍 getAuthHeaders - no jwt_token cookie found');
         }
       }
     }
 
-    return {
+    const headers: HeadersInit = {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
     };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+      console.log('🔍 getAuthHeaders - setting Authorization header with token');
+    } else {
+      console.log('🔍 getAuthHeaders - NO token found, request will be unauthenticated');
+    }
+
+    return headers;
   }
 
   private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
+    const authHeaders = this.getAuthHeaders();
     const config: RequestInit = {
       headers: {
-        ...this.getAuthHeaders(),
+        ...authHeaders,
         ...options.headers,
       },
       ...options,
     };
+
+    console.log('🔍 API Request:', {
+      url,
+      method: options.method || 'GET',
+      headers: config.headers,
+      hasAuth: !!(authHeaders as Record<string, string>).Authorization
+    });
 
     try {
       // Add timeout to prevent hanging requests
@@ -151,6 +175,45 @@ class ApiClient {
   // Dashboard data
   async getDashboardData(): Promise<DashboardData> {
     return this.request<DashboardData>(API_ENDPOINTS.DASHBOARD.MAIN);
+  }
+
+  // Role-based dashboard data
+  async getStudentDashboardData(): Promise<StudentDashboardData> {
+    return this.request<StudentDashboardData>(API_ENDPOINTS.DASHBOARD_DATA.STUDENT);
+  }
+
+  async getTeacherDashboardData(): Promise<TeacherDashboardData> {
+    return this.request<TeacherDashboardData>(API_ENDPOINTS.DASHBOARD_DATA.TEACHER);
+  }
+
+  async getAdminDashboardData(): Promise<AdminDashboardData> {
+    return this.request<AdminDashboardData>(API_ENDPOINTS.DASHBOARD_DATA.ADMIN);
+  }
+
+  // Role-based course data
+  async getCoursesTaughtByMe(): Promise<Course[]> {
+    return this.request<Course[]>(API_ENDPOINTS.COURSES.TAUGHT_BY_ME);
+  }
+
+  async getMyEnrolledCourses(): Promise<Course[]> {
+    return this.request<Course[]>(API_ENDPOINTS.COURSES.ENROLLED_IN);
+  }
+
+  async getAvailableCourses(): Promise<Course[]> {
+    return this.request<Course[]>(API_ENDPOINTS.COURSES.AVAILABLE);
+  }
+
+  // Role-based assignment data
+  async getMyAssignments(): Promise<Assignment[]> {
+    return this.request<Assignment[]>(API_ENDPOINTS.ASSIGNMENTS.MY_ASSIGNMENTS);
+  }
+
+  async getAssignmentsForCourse(courseId: string): Promise<Assignment[]> {
+    return this.request<Assignment[]>(API_ENDPOINTS.ASSIGNMENTS.ASSIGNMENTS_FOR_COURSE(courseId));
+  }
+
+  async getPendingGradingAssignments(): Promise<Assignment[]> {
+    return this.request<Assignment[]>(API_ENDPOINTS.ASSIGNMENTS.PENDING_GRADING);
   }
 
   // User profile

@@ -35,6 +35,9 @@ export const API_ENDPOINTS = {
   // Dashboard & Analytics
   DASHBOARD: {
     MAIN: `${API_CONFIG.BASE_URL}/dashboard`,
+    STUDENT: `${API_CONFIG.BASE_URL}/dashboard/student`,
+    TEACHER: `${API_CONFIG.BASE_URL}/dashboard/teacher`,
+    ADMIN: `${API_CONFIG.BASE_URL}/dashboard/admin`,
     TODOS: `${API_CONFIG.BASE_URL}/todos`,
     FEEDBACK: `${API_CONFIG.BASE_URL}/feedback/recent`,
   },
@@ -46,6 +49,10 @@ export const API_ENDPOINTS = {
     CREATE: `${API_CONFIG.BASE_URL}/courses`,
     UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/courses/${id}`,
     DELETE: (id: string) => `${API_CONFIG.BASE_URL}/courses/${id}`,
+    // Role-specific endpoints
+    TAUGHT_BY_ME: `${API_CONFIG.BASE_URL}/courses/taught-by-me`,
+    ENROLLED_IN: `${API_CONFIG.BASE_URL}/courses/enrolled-in`,
+    AVAILABLE: `${API_CONFIG.BASE_URL}/courses/available`,
   },
   
   // Enrollment Management
@@ -84,6 +91,10 @@ export const API_ENDPOINTS = {
     CREATE: `${API_CONFIG.BASE_URL}/assignments`,
     UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/assignments/${id}`,
     DELETE: (id: string) => `${API_CONFIG.BASE_URL}/assignments/${id}`,
+    // Role-specific endpoints
+    MY_ASSIGNMENTS: `${API_CONFIG.BASE_URL}/assignments/my-assignments`,
+    ASSIGNMENTS_FOR_COURSE: (courseId: string) => `${API_CONFIG.BASE_URL}/assignments/course/${courseId}`,
+    PENDING_GRADING: `${API_CONFIG.BASE_URL}/assignments/pending-grading`,
   },
   
   SUBMISSIONS: {
@@ -110,6 +121,13 @@ export const API_ENDPOINTS = {
     HEALTH: `${API_CONFIG.BASE_URL}/health`,
     TEST: `${API_CONFIG.BASE_URL}/test`,
     AUTH_STATUS: `${API_CONFIG.BASE_URL}/auth-status`,
+  },
+
+  // Role-based dashboard data
+  DASHBOARD_DATA: {
+    STUDENT: `${API_CONFIG.BASE_URL}/dashboard/student/data`,
+    TEACHER: `${API_CONFIG.BASE_URL}/dashboard/teacher/data`,
+    ADMIN: `${API_CONFIG.BASE_URL}/dashboard/admin/data`,
   },
 } as const;
 

@@ -16,7 +16,9 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  role: 'student' | 'instructor' | 'admin';
+  role: 'student' | 'teacher' | 'admin';
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface TodoItem {
@@ -47,6 +49,42 @@ export interface DashboardData {
     completedCourses: number;
     activeCourses: number;
     averageGrade?: number;
+  };
+}
+
+// Role-specific dashboard data
+export interface StudentDashboardData extends DashboardData {
+  enrollments: Course[];
+  upcomingAssignments: Assignment[];
+  recentGrades: CourseGrade[];
+  progress: {
+    overallProgress: number;
+    courseProgress: Record<string, number>;
+  };
+}
+
+export interface TeacherDashboardData extends DashboardData {
+  teachingCourses: Course[];
+  pendingSubmissions: Submission[];
+  gradingQueue: Assignment[];
+  studentStats: {
+    totalStudents: number;
+    activeStudents: number;
+    averageGrade: number;
+  };
+}
+
+export interface AdminDashboardData extends DashboardData {
+  systemStats: {
+    totalUsers: number;
+    totalCourses: number;
+    totalEnrollments: number;
+    activeUsers: number;
+  };
+  recentActivity: {
+    newUsers: User[];
+    newCourses: Course[];
+    newEnrollments: Enrollment[];
   };
 }
 

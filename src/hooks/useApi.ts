@@ -122,20 +122,37 @@ export function useAuth() {
 
   const login = async (credentials: { email: string; password: string }) => {
     try {
+      console.log('🔍 Login: Starting login process...');
       const response = await apiClient.login(credentials);
+      console.log('🔍 Login: API response received:', response);
       
       // Store in localStorage for client-side access
       localStorage.setItem('jwt_token', response.jwt_token);
       localStorage.setItem('user', JSON.stringify(response.user));
+      console.log('🔍 Login: Stored in localStorage');
       
       // Also store in cookies for middleware access
       setCookie('jwt_token', response.jwt_token, 7); // 7 days
       setCookie('user', JSON.stringify(response.user), 7);
+      console.log('🔍 Login: Stored in cookies');
+      
+      // Verify storage
+      const storedToken = localStorage.getItem('jwt_token');
+      const storedUser = localStorage.getItem('user');
+      console.log('🔍 Login: Verification - localStorage token:', storedToken ? 'EXISTS' : 'NOT FOUND');
+      console.log('🔍 Login: Verification - localStorage user:', storedUser ? 'EXISTS' : 'NOT FOUND');
+      
+      // Check cookies
+      const cookies = document.cookie.split(';');
+      const jwtCookie = cookies.find(cookie => cookie.trim().startsWith('jwt_token='));
+      console.log('🔍 Login: Verification - cookie token:', jwtCookie ? 'EXISTS' : 'NOT FOUND');
       
       setUser(response.user);
       setIsAuthenticated(true);
+      console.log('🔍 Login: Authentication state updated');
       return response;
     } catch (error) {
+      console.error('🔍 Login: Error occurred:', error);
       throw error;
     }
   };
