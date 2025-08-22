@@ -15,8 +15,7 @@ interface UseApiReturn<T> extends UseApiState<T> {
 }
 
 export function useApi<T>(
-  apiCall: () => Promise<T>,
-  dependencies: unknown[] = []
+  apiCall: () => Promise<T>
 ): UseApiReturn<T> {
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
