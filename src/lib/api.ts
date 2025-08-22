@@ -1,106 +1,104 @@
-import { DashboardData, Course, User, TodoItem, Feedback } from '@/types';
+/**
+ * Centralized configuration for backend API URLs
+ * This file contains all backend endpoint configurations
+ * to make it easier to update or change backend URLs in the future
+ */
 
-// Base API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+// Base API URL - change this to update all backend endpoints
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://shanghairevolmsapi.up.railway.app";
 
-// Generic API client
-class ApiClient {
-  private baseUrl: string;
+// API Endpoints Configuration
+export const API_ENDPOINTS = {
+  // Dashboard endpoints (for the main dashboard view)
+  DASHBOARD: {
+    BASE: `${API_BASE_URL}/dashboard`,
+  },
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
-  }
+  // User profile endpoints
+  USER: {
+    PROFILE: `${API_BASE_URL}/user/profile`,
+  },
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
-    
-    const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    };
+  // Authentication endpoints
+  AUTH: {
+    LOGIN: `${API_BASE_URL}/auth/login`,
+    REGISTER: `${API_BASE_URL}/auth/register`,
+  },
 
-    try {
-      const response = await fetch(url, config);
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-      }
+  // Vertical endpoints
+  VERTICALS: {
+    BASE: `${API_BASE_URL}/verticals`,
+    BY_ID: (id: string) => `${API_BASE_URL}/verticals/${id}`,
+  },
 
-      return await response.json();
-    } catch (error) {
-      console.error('API request failed:', error);
-      throw error;
-    }
-  }
+  // Batch endpoints
+  BATCHES: {
+    BASE: `${API_BASE_URL}/batches`,
+    BY_ID: (id: string) => `${API_BASE_URL}/batches/${id}`,
+  },
 
-  // Dashboard data
-  async getDashboardData(): Promise<DashboardData> {
-    return this.request<DashboardData>('/dashboard');
-  }
+  // Module endpoints
+  MODULES: {
+    BASE: `${API_BASE_URL}/modules`,
+    BY_ID: (id: string) => `${API_BASE_URL}/modules/${id}`,
+    BY_BATCH: (batchId: string) => `${API_BASE_URL}/modules/batch/${batchId}`,
+  },
 
-  // Courses
-  async getCourses(): Promise<Course[]> {
-    return this.request<Course[]>('/courses');
-  }
+  // Week endpoints
+  WEEKS: {
+    BASE: `${API_BASE_URL}/weeks`,
+    BY_ID: (id: string) => `${API_BASE_URL}/weeks/${id}`,
+    BY_MODULE: (moduleId: string) => `${API_BASE_URL}/weeks/module/${moduleId}`,
+  },
 
-  async getCourse(id: string): Promise<Course> {
-    return this.request<Course>(`/courses/${id}`);
-  }
+  // Lecture endpoints
+  LECTURES: {
+    BASE: `${API_BASE_URL}/lectures`,
+    BY_ID: (id: string) => `${API_BASE_URL}/lectures/${id}`,
+    BY_WEEK: (weekId: string) => `${API_BASE_URL}/lectures/week/${weekId}`,
+  },
 
-  // User
-  async getCurrentUser(): Promise<User> {
-    return this.request<User>('/user/profile');
-  }
+  // Assignment endpoints
+  ASSIGNMENTS: {
+    BASE: `${API_BASE_URL}/assignments`,
+    BY_ID: (id: string) => `${API_BASE_URL}/assignments/${id}`,
+  },
 
-  // Todos
-  async getTodos(): Promise<TodoItem[]> {
-    return this.request<TodoItem[]>('/todos');
-  }
+  // Submission endpoints
+  SUBMISSIONS: {
+    BASE: `${API_BASE_URL}/submissions`,
+    BY_ID: (id: string) => `${API_BASE_URL}/submissions/${id}`,
+  },
 
-  async createTodo(todo: Omit<TodoItem, 'id'>): Promise<TodoItem> {
-    return this.request<TodoItem>('/todos', {
-      method: 'POST',
-      body: JSON.stringify(todo),
-    });
-  }
+  // Enrollment endpoints
+  ENROLLMENTS: {
+    BASE: `${API_BASE_URL}/enrollments`,
+    MY_ENROLLMENTS: `${API_BASE_URL}/enrollments/my-enrollments`,
+    AVAILABLE_BATCHES: `${API_BASE_URL}/enrollments/available-batches`,
+    MY_ASSIGNMENTS: (batchId?: string) =>
+      batchId
+        ? `${API_BASE_URL}/enrollments/my-assignments?batchId=${batchId}`
+        : `${API_BASE_URL}/enrollments/my-assignments`,
+    BATCH_CONTENT: (batchId: string) =>
+      `${API_BASE_URL}/enrollments/batch/${batchId}/content`,
+  },
 
-  async updateTodo(id: string, updates: Partial<TodoItem>): Promise<TodoItem> {
-    return this.request<TodoItem>(`/todos/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(updates),
-    });
-  }
+  // Todo endpoints (for dashboard todos)
+  TODOS: {
+    BASE: `${API_BASE_URL}/todos`,
+    BY_ID: (id: string) => `${API_BASE_URL}/todos/${id}`,
+  },
 
-  async deleteTodo(id: string): Promise<void> {
-    return this.request<void>(`/todos/${id}`, {
-      method: 'DELETE',
-    });
-  }
+  // Feedback endpoints (for dashboard feedback)
+  FEEDBACK: {
+    RECENT: `${API_BASE_URL}/feedback/recent`,
+  },
+};
 
-  // Feedback
-  async getRecentFeedback(): Promise<Feedback[]> {
-    return this.request<Feedback[]>('/feedback/recent');
-  }
-}
+// Export the base URL for cases where dynamic endpoints are needed
+export { API_BASE_URL };
 
-// Create and export the API client instance
-export const apiClient = new ApiClient(API_BASE_URL);
-
-// Export individual functions for convenience
-export const {
-  getDashboardData,
-  getCourses,
-  getCourse,
-  getCurrentUser,
-  getTodos,
-  createTodo,
-  updateTodo,
-  deleteTodo,
-  getRecentFeedback,
-} = apiClient;
+// Helper function to build custom endpoints if needed
+export const buildEndpoint = (path: string): string => {
+  return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+};
