@@ -5,7 +5,7 @@
  */
 
 // Base API URL - change this to update all backend endpoints
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://shanghairevolmsapi.up.railway.app";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://shanghairevolmsapi.up.railway.app/api/v1";
 
 // API Endpoints Configuration
 export const API_ENDPOINTS = {

@@ -3,7 +3,7 @@
 // Test script for your LMS backend
 // Run with: node test-backend.js
 
-const API_BASE = 'https://shanghairevolmsapi.up.railway.app';
+const API_BASE = 'https://shanghairevolmsapi.up.railway.app/';
 
 async function testEndpoint(endpoint, description) {
   try {
@@ -31,18 +31,18 @@ async function runTests() {
   console.log('================================');
   
   // Test basic endpoint
-  await testEndpoint('/', 'Basic Health Check');
+  await testEndpoint('health', 'Basic Health Check');
   
   // Test required API endpoints
-  await testEndpoint('/dashboard', 'Dashboard Data');
-  await testEndpoint('/user/profile', 'User Profile');
-  await testEndpoint('/enrollments/my-enrollments', 'My Enrollments');
-  await testEndpoint('/todos', 'Todos List');
-  await testEndpoint('/feedback/recent', 'Recent Feedback');
+  await testEndpoint('api/v1/dashboard', 'Dashboard Data');
+  await testEndpoint('api/v1/user/profile', 'User Profile');
+  await testEndpoint('api/v1/enrollments/my-enrollments', 'My Enrollments');
+  await testEndpoint('api/v1/todos', 'Todos List');
+  await testEndpoint('api/v1/feedback/recent', 'Recent Feedback');
   
   // Test authentication endpoints
-  await testEndpoint('/auth/login', 'Login Endpoint');
-  await testEndpoint('/auth/register', 'Register Endpoint');
+  await testEndpoint('api/v1/auth/login', 'Login Endpoint');
+  await testEndpoint('api/v1/auth/register', 'Register Endpoint');
   
   console.log('\n✨ Test suite completed!');
   console.log('\n📋 Expected Results:');

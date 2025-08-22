@@ -34,11 +34,11 @@ async function runTests() {
   await testEndpoint('/', 'Basic Health Check');
   
   // Test required API endpoints
-  await testEndpoint('/api/dashboard', 'Dashboard Data');
-  await testEndpoint('/api/courses', 'Courses List');
-  await testEndpoint('/api/user/profile', 'User Profile');
-  await testEndpoint('/api/todos', 'Todos List');
-  await testEndpoint('/api/feedback/recent', 'Recent Feedback');
+  await testEndpoint('/api/v1/dashboard', 'Dashboard Data');
+  await testEndpoint('/api/v1/courses', 'Courses List');
+  await testEndpoint('/api/v1/user/profile', 'User Profile');
+  await testEndpoint('/api/v1/todos', 'Todos List');
+  await testEndpoint('/api/v1/feedback/recent', 'Recent Feedback');
   
   console.log('\n✨ Test suite completed!');
   console.log('\n📋 Expected Results:');
