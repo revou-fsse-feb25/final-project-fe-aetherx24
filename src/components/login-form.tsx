@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +14,15 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect when authentication state changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("User authenticated, redirecting to dashboard...");
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,11 +31,11 @@ export function LoginForm() {
 
     try {
       if (email && password) {
+        console.log("Attempting login...");
         // Use the auth hook for login
         await login({ email, password });
-        
-        // Redirect to dashboard
-        router.push("/dashboard");
+        console.log("Login successful, waiting for auth state update...");
+        // The redirect will happen automatically via useEffect when isAuthenticated changes
       } else {
         setError("Please fill in all fields");
       }
@@ -85,6 +93,9 @@ export function LoginForm() {
         <div className="mt-4 text-center text-sm text-gray-600">
           <p>Connected to backend API</p>
           <p className="text-xs mt-1">Make sure your backend is running</p>
+          {isAuthenticated && (
+            <p className="text-green-600 mt-2">✓ Authenticated! Redirecting...</p>
+          )}
         </div>
       </CardContent>
     </Card>
