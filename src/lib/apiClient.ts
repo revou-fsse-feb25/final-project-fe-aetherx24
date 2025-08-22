@@ -4,7 +4,17 @@ import { API_ENDPOINTS } from './api';
 // Generic API client with error handling
 class ApiClient {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('jwt_token');
+    // Try to get token from localStorage (client-side) or cookie (for SSR)
+    let token: string | null = null;
+    
+    if (typeof window !== 'undefined') {
+      // Client-side: get from localStorage
+      token = localStorage.getItem('jwt_token');
+    } else {
+      // Server-side: this will be handled by middleware, but we keep this for completeness
+      token = null;
+    }
+
     return {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -67,9 +77,29 @@ class ApiClient {
     }
   }
 
+  // Helper function to set cookies
+  private setCookie(name: string, value: string, days: number = 7): void {
+    if (typeof window !== 'undefined') {
+      const expires = new Date();
+      expires.setDate(expires.getDate() + days);
+      document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+    }
+  }
+
+  // Helper function to delete cookies
+  private deleteCookie(name: string): void {
+    if (typeof window !== 'undefined') {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+  }
+
   clearAuth(): void {
-    localStorage.removeItem('jwt_token');
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('jwt_token');
+      localStorage.removeItem('user');
+      this.deleteCookie('jwt_token');
+      this.deleteCookie('user');
+    }
   }
 
   // Dashboard data
