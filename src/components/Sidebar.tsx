@@ -2,57 +2,93 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/hooks/useApi';
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const { logout } = useAuth();
 
-    const navItems = [
-        { href: '/dashboard', icon: '🏠', label: 'Dashboard' },
-        { href: '/courses', icon: '📚', label: 'Courses' },
-        { href: '/grades', icon: '📊', label: 'Grades' },
-        { href: '/profile', icon: '👤', label: 'Profile' },
-        { href: '/settings', icon: '⚙️', label: 'Settings' },
-    ];
+    const handleLogout = () => {
+        logout();
+        // Redirect to login page
+        window.location.href = '/';
+    };
 
     return (
-        <aside className="bg-gray-800 text-white w-20 flex flex-col items-center py-4 min-h-screen">
-            <div className="mb-8">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                    L
-                </div>
+        <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+            {/* Logo */}
+            <div className="p-6 border-b border-gray-200">
+                <div className="text-2xl font-bold text-blue-600">LMS</div>
             </div>
-            
-            <nav className="flex-1 space-y-4">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`group relative flex flex-col items-center p-2 rounded-lg transition-colors ${
-                                isActive 
-                                    ? 'bg-blue-600 text-white' 
-                                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+
+            {/* Navigation */}
+            <nav className="flex-1 p-4">
+                <ul className="space-y-2">
+                    <li>
+                        <Link 
+                            href="/dashboard" 
+                            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+                                pathname === '/dashboard' 
+                                    ? 'bg-blue-50 text-blue-600' 
+                                    : 'text-gray-700 hover:bg-gray-50'
                             }`}
-                            title={item.label}
                         >
-                            <span className="text-2xl mb-1">{item.icon}</span>
-                            <span className="text-xs text-center">{item.label}</span>
-                            
-                            {/* Tooltip */}
-                            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                                {item.label}
-                            </div>
+                            <span className="mr-3">🏠</span>
+                            Dashboard
                         </Link>
-                    );
-                })}
+                    </li>
+                    <li>
+                        <Link 
+                            href="/courses" 
+                            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+                                pathname === '/courses' 
+                                    ? 'bg-blue-50 text-blue-600' 
+                                    : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <span className="mr-3">📚</span>
+                            Courses
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            href="/assignments" 
+                            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+                                pathname === '/assignments' 
+                                    ? 'bg-blue-50 text-blue-600' 
+                                    : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <span className="mr-3">📝</span>
+                            Assignments
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            href="/progress" 
+                            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+                                pathname === '/progress' 
+                                    ? 'bg-blue-50 text-blue-600' 
+                                    : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <span className="mr-3">📊</span>
+                            Progress
+                        </Link>
+                    </li>
+                </ul>
             </nav>
-            
-            <div className="mt-auto">
-                <button className="p-2 text-gray-400 hover:text-white transition-colors" title="Logout">
-                    <span className="text-xl">🚪</span>
+
+            {/* Logout Button */}
+            <div className="p-4 border-t border-gray-200">
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                    <span className="mr-3">🚪</span>
+                    Logout
                 </button>
             </div>
-        </aside>
+        </div>
     );
 }
