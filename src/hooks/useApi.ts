@@ -69,8 +69,26 @@ export function useAuth() {
   useEffect(() => {
     // Check authentication status on mount
     const checkAuth = () => {
-      const token = localStorage.getItem('jwt_token');
-      const storedUser = localStorage.getItem('user');
+      let token = localStorage.getItem('jwt_token');
+      let storedUser = localStorage.getItem('user');
+      
+      // If no token in localStorage, check cookies
+      if (!token) {
+        const cookies = document.cookie.split(';');
+        const jwtCookie = cookies.find(cookie => cookie.trim().startsWith('jwt_token='));
+        if (jwtCookie) {
+          token = jwtCookie.split('=')[1];
+        }
+      }
+      
+      // If no user in localStorage, check cookies
+      if (!storedUser) {
+        const cookies = document.cookie.split(';');
+        const userCookie = cookies.find(cookie => cookie.trim().startsWith('user='));
+        if (userCookie) {
+          storedUser = userCookie.split('=')[1];
+        }
+      }
       
       if (token && storedUser) {
         try {

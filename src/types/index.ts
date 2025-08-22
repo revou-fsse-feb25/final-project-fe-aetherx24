@@ -60,3 +60,88 @@ export interface RegisterResponse {
   jwt_token: string;
   user: User;
 }
+
+// Assignment types
+export interface Assignment {
+  id: string;
+  title: string;
+  description: string;
+  courseId: string;
+  dueDate: string;
+  maxPoints: number;
+  status: 'draft' | 'published' | 'closed';
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Submission types
+export interface Submission {
+  id: string;
+  assignmentId: string;
+  studentId: string;
+  content: string;
+  submittedAt: string;
+  grade?: number;
+  feedback?: string;
+  status: 'submitted' | 'graded' | 'late';
+}
+
+// Enrollment types
+export interface Enrollment {
+  id: string;
+  studentId: string;
+  courseId: string;
+  enrolledAt: string;
+  status: 'active' | 'completed' | 'dropped';
+  progress: number;
+}
+
+// Module and Lesson types
+export interface Module {
+  id: string;
+  title: string;
+  description: string;
+  courseId: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  description: string;
+  moduleId: string;
+  content: string;
+  order: number;
+  duration?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Grade types
+export interface CourseGrade {
+  id: string;
+  studentId: string;
+  courseId: string;
+  grade: number;
+  letterGrade: string;
+  gradeDate: string;
+  comments?: string;
+}
+
+// Utility types
+export interface HealthCheck {
+  status: 'healthy' | 'unhealthy';
+  timestamp: string;
+  services: {
+    database: 'up' | 'down';
+    api: 'up' | 'down';
+  };
+}
+
+export interface AuthStatus {
+  isAuthenticated: boolean;
+  user?: User;
+  expiresAt?: string;
+}

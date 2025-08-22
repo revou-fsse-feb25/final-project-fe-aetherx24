@@ -1,18 +1,37 @@
-import { DashboardData, Course, User, TodoItem, Feedback, LoginResponse, RegisterResponse } from '@/types';
-import { API_ENDPOINTS } from './api';
+import { 
+  DashboardData, 
+  Course, 
+  User, 
+  TodoItem, 
+  Feedback, 
+  LoginResponse, 
+  RegisterResponse,
+  Assignment,
+  Submission,
+  Enrollment,
+  HealthCheck,
+  AuthStatus
+} from '@/types';
+import { API_ENDPOINTS, API_CONFIG } from './api';
 
 // Generic API client with error handling
 class ApiClient {
   private getAuthHeaders(): HeadersInit {
-    // Try to get token from localStorage (client-side) or cookie (for SSR)
+    // Try to get token from localStorage first, then cookies
     let token: string | null = null;
     
     if (typeof window !== 'undefined') {
-      // Client-side: get from localStorage
+      // Client-side: try localStorage first, then cookies
       token = localStorage.getItem('jwt_token');
-    } else {
-      // Server-side: this will be handled by middleware, but we keep this for completeness
-      token = null;
+      
+      // If no token in localStorage, try to get from cookies
+      if (!token) {
+        const cookies = document.cookie.split(';');
+        const jwtCookie = cookies.find(cookie => cookie.trim().startsWith('jwt_token='));
+        if (jwtCookie) {
+          token = jwtCookie.split('=')[1];
+        }
+      }
     }
 
     return {
@@ -33,7 +52,7 @@ class ApiClient {
     try {
       // Add timeout to prevent hanging requests
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
 
       const response = await fetch(url, {
         ...config,
@@ -63,13 +82,40 @@ class ApiClient {
 
   // Authentication methods
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('jwt_token');
+    if (typeof window === 'undefined') return false;
+    
+    // Check localStorage first
+    let token = localStorage.getItem('jwt_token');
+    
+    // If no token in localStorage, check cookies
+    if (!token) {
+      const cookies = document.cookie.split(';');
+      const jwtCookie = cookies.find(cookie => cookie.trim().startsWith('jwt_token='));
+      if (jwtCookie) {
+        token = jwtCookie.split('=')[1];
+      }
+    }
+    
     return !!token;
   }
 
   getStoredUser(): User | null {
-    const userStr = localStorage.getItem('user');
+    if (typeof window === 'undefined') return null;
+    
+    // Try localStorage first
+    let userStr = localStorage.getItem('user');
+    
+    // If no user in localStorage, try cookies
+    if (!userStr) {
+      const cookies = document.cookie.split(';');
+      const userCookie = cookies.find(cookie => cookie.trim().startsWith('user='));
+      if (userCookie) {
+        userStr = userCookie.split('=')[1];
+      }
+    }
+    
     if (!userStr) return null;
+    
     try {
       return JSON.parse(userStr);
     } catch {
@@ -104,51 +150,160 @@ class ApiClient {
 
   // Dashboard data
   async getDashboardData(): Promise<DashboardData> {
-    return this.request<DashboardData>(API_ENDPOINTS.DASHBOARD.BASE);
+    return this.request<DashboardData>(API_ENDPOINTS.DASHBOARD.MAIN);
   }
 
   // User profile
   async getCurrentUser(): Promise<User> {
-    return this.request<User>(API_ENDPOINTS.USER.PROFILE);
+    return this.request<User>(API_ENDPOINTS.USERS.PROFILE);
   }
 
-  // Courses (using enrollments endpoint)
+  // Courses
   async getCourses(): Promise<Course[]> {
     return this.request<Course[]>(API_ENDPOINTS.ENROLLMENTS.MY_ENROLLMENTS);
   }
 
   async getCourse(id: string): Promise<Course> {
-    return this.request<Course>(`${API_ENDPOINTS.ENROLLMENTS.BASE}/${id}`);
+    return this.request<Course>(API_ENDPOINTS.COURSES.BY_ID(id));
+  }
+
+  async getAllCourses(): Promise<Course[]> {
+    return this.request<Course[]>(API_ENDPOINTS.COURSES.ALL);
+  }
+
+  async createCourse(course: Omit<Course, 'id'>): Promise<Course> {
+    return this.request<Course>(API_ENDPOINTS.COURSES.CREATE, {
+      method: 'POST',
+      body: JSON.stringify(course),
+    });
+  }
+
+  async updateCourse(id: string, updates: Partial<Course>): Promise<Course> {
+    return this.request<Course>(API_ENDPOINTS.COURSES.UPDATE(id), {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteCourse(id: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.COURSES.DELETE(id), {
+      method: 'DELETE',
+    });
   }
 
   // Todos
   async getTodos(): Promise<TodoItem[]> {
-    return this.request<TodoItem[]>(API_ENDPOINTS.TODOS.BASE);
+    return this.request<TodoItem[]>(API_ENDPOINTS.DASHBOARD.TODOS);
   }
 
   async createTodo(todo: Omit<TodoItem, 'id'>): Promise<TodoItem> {
-    return this.request<TodoItem>(API_ENDPOINTS.TODOS.BASE, {
+    return this.request<TodoItem>(API_ENDPOINTS.DASHBOARD.TODOS, {
       method: 'POST',
       body: JSON.stringify(todo),
     });
   }
 
   async updateTodo(id: string, updates: Partial<TodoItem>): Promise<TodoItem> {
-    return this.request<TodoItem>(API_ENDPOINTS.TODOS.BY_ID(id), {
+    return this.request<TodoItem>(`${API_ENDPOINTS.DASHBOARD.TODOS}/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(updates),
     });
   }
 
   async deleteTodo(id: string): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.TODOS.BY_ID(id), {
+    return this.request<void>(`${API_ENDPOINTS.DASHBOARD.TODOS}/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Feedback
   async getRecentFeedback(): Promise<Feedback[]> {
-    return this.request<Feedback[]>(API_ENDPOINTS.FEEDBACK.RECENT);
+    return this.request<Feedback[]>(API_ENDPOINTS.DASHBOARD.FEEDBACK);
+  }
+
+  // Enrollments
+  async getMyEnrollments(): Promise<Course[]> {
+    return this.request<Course[]>(API_ENDPOINTS.ENROLLMENTS.MY_ENROLLMENTS);
+  }
+
+  async createEnrollment(courseId: string): Promise<Enrollment> {
+    return this.request<Enrollment>(API_ENDPOINTS.ENROLLMENTS.CREATE, {
+      method: 'POST',
+      body: JSON.stringify({ courseId }),
+    });
+  }
+
+  async deleteEnrollment(id: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ENROLLMENTS.DELETE(id), {
+      method: 'DELETE',
+    });
+  }
+
+  // Assignments
+  async getAssignments(): Promise<Assignment[]> {
+    return this.request<Assignment[]>(API_ENDPOINTS.ASSIGNMENTS.ALL);
+  }
+
+  async getAssignment(id: string): Promise<Assignment> {
+    return this.request<Assignment>(API_ENDPOINTS.ASSIGNMENTS.BY_ID(id));
+  }
+
+  async createAssignment(assignment: Omit<Assignment, 'id' | 'createdAt' | 'updatedAt'>): Promise<Assignment> {
+    return this.request<Assignment>(API_ENDPOINTS.ASSIGNMENTS.CREATE, {
+      method: 'POST',
+      body: JSON.stringify(assignment),
+    });
+  }
+
+  async updateAssignment(id: string, updates: Partial<Assignment>): Promise<Assignment> {
+    return this.request<Assignment>(API_ENDPOINTS.ASSIGNMENTS.UPDATE(id), {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteAssignment(id: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ASSIGNMENTS.DELETE(id), {
+      method: 'DELETE',
+    });
+  }
+
+  // Submissions
+  async getSubmissions(): Promise<Submission[]> {
+    return this.request<Submission[]>(API_ENDPOINTS.SUBMISSIONS.ALL);
+  }
+
+  async getSubmission(id: string): Promise<Submission> {
+    return this.request<Submission>(API_ENDPOINTS.SUBMISSIONS.BY_ID(id));
+  }
+
+  async createSubmission(submission: Omit<Submission, 'id' | 'submittedAt'>): Promise<Submission> {
+    return this.request<Submission>(API_ENDPOINTS.SUBMISSIONS.CREATE, {
+      method: 'POST',
+      body: JSON.stringify(submission),
+    });
+  }
+
+  async updateSubmission(id: string, updates: Partial<Submission>): Promise<Submission> {
+    return this.request<Submission>(API_ENDPOINTS.SUBMISSIONS.UPDATE(id), {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteSubmission(id: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.SUBMISSIONS.DELETE(id), {
+      method: 'DELETE',
+    });
+  }
+
+  // Utility methods
+  async checkHealth(): Promise<HealthCheck> {
+    return this.request<HealthCheck>(API_ENDPOINTS.UTILITY.HEALTH);
+  }
+
+  async checkAuthStatus(): Promise<AuthStatus> {
+    return this.request<AuthStatus>(API_ENDPOINTS.UTILITY.AUTH_STATUS);
   }
 
   // Authentication
@@ -176,11 +331,30 @@ export const {
   getCurrentUser,
   getCourses,
   getCourse,
+  getAllCourses,
+  createCourse,
+  updateCourse,
+  deleteCourse,
   getTodos,
   createTodo,
   updateTodo,
   deleteTodo,
   getRecentFeedback,
+  getMyEnrollments,
+  createEnrollment,
+  deleteEnrollment,
+  getAssignments,
+  getAssignment,
+  createAssignment,
+  updateAssignment,
+  deleteAssignment,
+  getSubmissions,
+  getSubmission,
+  createSubmission,
+  updateSubmission,
+  deleteSubmission,
+  checkHealth,
+  checkAuthStatus,
   login,
   register,
 } = apiClient;
