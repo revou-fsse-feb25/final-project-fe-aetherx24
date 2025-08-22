@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiClient } from '@/lib/apiClient';
+import { User } from '@/types';
 
 interface UseApiState<T> {
   data: T | null;
@@ -57,6 +58,74 @@ export function useApi<T>(
     ...state,
     refetch,
     setData,
+  };
+}
+
+// Authentication hook
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status on mount
+    const checkAuth = () => {
+      const token = localStorage.getItem('jwt_token');
+      const storedUser = localStorage.getItem('user');
+      
+      if (token && storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          setIsAuthenticated(true);
+        } catch {
+          // Invalid stored user data
+          apiClient.clearAuth();
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuth();
+
+    // Listen for storage changes (e.g., when token is removed in another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'jwt_token' || e.key === 'user') {
+        checkAuth();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const login = async (credentials: { email: string; password: string }) => {
+    try {
+      const response = await apiClient.login(credentials);
+      localStorage.setItem('jwt_token', response.jwt_token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    apiClient.clearAuth();
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  return {
+    user,
+    isAuthenticated,
+    login,
+    logout,
   };
 }
 
