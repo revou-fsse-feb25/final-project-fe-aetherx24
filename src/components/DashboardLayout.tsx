@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import DashboardHeader from './DashboardHeader';
 import CourseCard from './CourseCard';
@@ -9,6 +10,38 @@ import { Course } from '@/types';
 
 export default function DashboardLayout() {
     const { data: dashboardData, loading, error } = useDashboardData();
+    const [timeoutError, setTimeoutError] = useState(false);
+
+    // Add timeout protection to prevent infinite loading
+    useEffect(() => {
+        if (loading) {
+            const timeout = setTimeout(() => {
+                setTimeoutError(true);
+            }, 10000); // 10 second timeout
+
+            return () => clearTimeout(timeout);
+        } else {
+            setTimeoutError(false);
+        }
+    }, [loading]);
+
+    if (timeoutError) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <div className="text-center">
+                    <div className="text-red-500 text-6xl mb-4">⏰</div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Request Timeout</h2>
+                    <p className="text-gray-600 mb-4">The dashboard is taking too long to load. This might be due to backend issues.</p>
+                    <button 
+                        onClick={() => window.location.reload()} 
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     if (loading) {
         return (
@@ -16,6 +49,7 @@ export default function DashboardLayout() {
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading dashboard...</p>
+                    <p className="text-sm text-gray-400 mt-2">This may take a few seconds</p>
                 </div>
             </div>
         );
@@ -28,6 +62,26 @@ export default function DashboardLayout() {
                     <div className="text-red-500 text-6xl mb-4">⚠️</div>
                     <h2 className="text-xl font-semibold text-gray-800 mb-2">Error Loading Dashboard</h2>
                     <p className="text-gray-600 mb-4">{error}</p>
+                    <p className="text-sm text-gray-500 mb-4">This usually means the backend API is not responding</p>
+                    <button 
+                        onClick={() => window.location.reload()} 
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // Add fallback for when dashboardData is null
+    if (!dashboardData) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <div className="text-center">
+                    <div className="text-gray-400 text-6xl mb-4">📊</div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">No Dashboard Data</h2>
+                    <p className="text-gray-600 mb-4">Unable to load dashboard information.</p>
                     <button 
                         onClick={() => window.location.reload()} 
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
