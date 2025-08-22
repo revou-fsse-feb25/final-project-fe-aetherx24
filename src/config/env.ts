@@ -1,6 +1,6 @@
 export const config = {
   api: {
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'https://final-project-be-aetherx24-production.up.railway.app/api',
     timeout: 10000, // 10 seconds
   },
   app: {

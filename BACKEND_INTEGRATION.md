@@ -1,23 +1,18 @@
 # Backend Integration Guide
 
-## Overview
-This document outlines how to integrate your LMS Dashboard frontend with a backend API and prepare for deployment.
-
 ## Current Status
 ✅ **Frontend Ready for Backend Integration**
-- Mock data removed
-- Type-safe API client implemented
-- Data fetching hooks created
-- Loading and error states implemented
-- Responsive UI components ready
+✅ **Backend Server Running** at https://final-project-be-aetherx24-production.up.railway.app/
+❌ **API Endpoints Not Implemented Yet**
+✅ **Mock API Enabled** for development
 
 ## Backend API Requirements
 
 ### Base URL
-- **Development**: `http://localhost:8000/api`
-- **Production**: Set via `NEXT_PUBLIC_API_URL` environment variable
+- **Production**: `https://final-project-be-aetherx24-production.up.railway.app/api`
+- **Development**: Set via `NEXT_PUBLIC_API_URL` environment variable
 
-### Required Endpoints
+### Required Endpoints (NOT IMPLEMENTED YET)
 
 #### 1. Dashboard Data
 ```
@@ -58,6 +53,47 @@ DELETE /api/todos/:id
 ```
 GET /api/feedback/recent
 Response: Feedback[]
+```
+
+## Immediate Action Required
+
+### 1. Implement Backend Endpoints
+Your backend needs to implement the above endpoints. Here's a quick example structure:
+
+```javascript
+// Example Express.js routes
+app.get('/api/dashboard', (req, res) => {
+  // Return dashboard data
+  res.json({
+    user: { /* user data */ },
+    courses: [ /* courses array */ ],
+    todos: [ /* todos array */ ],
+    recentFeedback: [ /* feedback array */ ],
+    stats: { /* stats object */ }
+  });
+});
+
+app.get('/api/courses', (req, res) => {
+  // Return courses array
+});
+
+app.get('/api/user/profile', (req, res) => {
+  // Return user profile
+});
+```
+
+### 2. Test Endpoints
+Once implemented, test with:
+```bash
+curl https://final-project-be-aetherx24-production.up.railway.app/api/dashboard
+curl https://final-project-be-aetherx24-production.up.railway.app/api/courses
+```
+
+### 3. Switch to Real API
+When endpoints are working, update frontend:
+```typescript
+// In src/lib/api.ts, change this line:
+const USE_MOCK_API = process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' || false; // Disable mock API
 ```
 
 ## Data Models
@@ -113,126 +149,71 @@ Response: Feedback[]
 }
 ```
 
-## Environment Setup
+## Current Frontend Status
 
-### 1. Create `.env.local` file
+- **Mock API**: ✅ Enabled (dashboard works with sample data)
+- **Real API**: ❌ Not connected (endpoints missing)
+- **Fallback**: ✅ Automatic fallback to mock data when real API fails
+
+## Next Steps Priority
+
+1. **HIGH**: Implement `/api/dashboard` endpoint
+2. **HIGH**: Implement `/api/courses` endpoint  
+3. **MEDIUM**: Implement `/api/user/profile` endpoint
+4. **MEDIUM**: Implement `/api/todos` endpoints
+5. **LOW**: Implement `/api/feedback/recent` endpoint
+
+## Testing Your Backend
+
+### 1. Test Basic Response
 ```bash
-# API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-
-# Environment
-NODE_ENV=development
+curl https://final-project-be-aetherx24-production.up.railway.app/
+# Should return: "LMS Backend is running!"
 ```
 
-### 2. Production Environment
+### 2. Test API Endpoints (after implementation)
 ```bash
-# Set in your deployment platform
-NEXT_PUBLIC_API_URL=https://your-api-domain.com/api
-NODE_ENV=production
+curl https://final-project-be-aetherx24-production.up.railway.app/api/dashboard
+curl https://final-project-be-aetherx24-production.up.railway.app/api/courses
 ```
 
-## Backend Implementation Tips
-
-### 1. CORS Configuration
-Ensure your backend allows requests from your frontend domain:
-```typescript
-// Example CORS config
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-domain.com'],
-  credentials: true
-}));
-```
-
-### 2. Authentication
-The current implementation doesn't include authentication. Add JWT tokens or session-based auth:
-```typescript
-// Add to API client
-headers: {
-  'Authorization': `Bearer ${token}`,
-  'Content-Type': 'application/json',
-}
-```
-
-### 3. Error Handling
-Return consistent error responses:
-```typescript
-{
-  error: true,
-  message: "Error description",
-  statusCode: 400
-}
-```
-
-## Testing Backend Integration
-
-### 1. Start Backend Server
-```bash
-# Your backend should be running on port 8000
-# or update NEXT_PUBLIC_API_URL accordingly
-```
-
-### 2. Test API Endpoints
-```bash
-# Test dashboard endpoint
-curl http://localhost:8000/api/dashboard
-
-# Test courses endpoint
-curl http://localhost:8000/api/courses
-```
-
-### 3. Check Frontend
-- Navigate to `/dashboard`
+### 3. Test Frontend Integration
+- Navigate to `/dashboard` in your frontend
 - Check browser console for API calls
-- Verify data is displayed correctly
-
-## Deployment Checklist
-
-### Frontend
-- [ ] Environment variables configured
-- [ ] API endpoints updated for production
-- [ ] Build successful (`npm run build`)
-- [ ] Static assets optimized
-
-### Backend
-- [ ] API endpoints implemented
-- [ ] CORS configured for production domain
-- [ ] Database connected and tested
-- [ ] Environment variables set
-- [ ] SSL certificate configured (HTTPS)
+- Verify data loads from real backend instead of mock
 
 ## Common Issues & Solutions
 
 ### 1. CORS Errors
-- Ensure backend allows frontend domain
-- Check credentials configuration
+Ensure your backend allows requests from your frontend domain:
+```javascript
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://your-frontend-domain.com'],
+  credentials: true
+}));
+```
 
-### 2. API Timeout
-- Increase timeout in `src/config/env.ts`
-- Check backend response times
+### 2. 404 Errors
+- Verify endpoint paths match exactly (`/api/dashboard`, not `/dashboard`)
+- Check your route definitions in the backend
 
-### 3. Data Not Loading
-- Verify API endpoints are working
-- Check browser network tab
-- Verify data structure matches types
-
-### 4. Build Errors
-- Check TypeScript compilation
-- Verify all imports are correct
-- Check for missing dependencies
-
-## Next Steps
-
-1. **Implement Backend API** with the required endpoints
-2. **Test Integration** using the provided hooks
-3. **Add Authentication** if required
-4. **Deploy Backend** to your hosting platform
-5. **Update Frontend Environment** with production API URL
-6. **Deploy Frontend** to your hosting platform
+### 3. Data Structure Mismatch
+- Ensure backend returns data matching the TypeScript interfaces
+- Check field names and types
 
 ## Support
 
 If you encounter issues:
-1. Check browser console for errors
-2. Verify API endpoints are accessible
-3. Check network tab for failed requests
-4. Verify data structure matches TypeScript types
+1. Check backend logs for errors
+2. Verify endpoint URLs are correct
+3. Test endpoints with curl/Postman
+4. Check frontend console for API errors
+5. Verify data structure matches TypeScript types
+
+## Quick Start for Backend
+
+1. **Add routes** to your backend server
+2. **Return sample data** matching the interfaces above
+3. **Test endpoints** with curl
+4. **Update frontend** to use real API
+5. **Deploy and test** the full integration

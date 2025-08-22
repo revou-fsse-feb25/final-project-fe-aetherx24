@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -12,6 +14,22 @@ export default function Home() {
           <div className="bg-white p-4 rounded-lg shadow">
             <h2 className="text-lg font-semibold">Test Component</h2>
             <p className="text-sm text-gray-500">If you see this without errors, hydration is working!</p>
+          </div>
+          
+          <div className="space-y-3">
+            <Link 
+              href="/login"
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Sign In
+            </Link>
+            <br />
+            <Link 
+              href="/dashboard"
+              className="inline-block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Go to Dashboard
+            </Link>
           </div>
         </div>
       </div>
