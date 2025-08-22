@@ -105,13 +105,29 @@ export function useAuth() {
   const login = async (credentials: { email: string; password: string }) => {
     try {
       const response = await apiClient.login(credentials);
+      
+      // Store in localStorage for client-side access
       localStorage.setItem('jwt_token', response.jwt_token);
       localStorage.setItem('user', JSON.stringify(response.user));
+      
+      // Also store in cookies for middleware access
+      setCookie('jwt_token', response.jwt_token, 7); // 7 days
+      setCookie('user', JSON.stringify(response.user), 7);
+      
       setUser(response.user);
       setIsAuthenticated(true);
       return response;
     } catch (error) {
       throw error;
+    }
+  };
+
+  // Helper function to set cookies
+  const setCookie = (name: string, value: string, days: number = 7): void => {
+    if (typeof window !== 'undefined') {
+      const expires = new Date();
+      expires.setDate(expires.getDate() + days);
+      document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
     }
   };
 
