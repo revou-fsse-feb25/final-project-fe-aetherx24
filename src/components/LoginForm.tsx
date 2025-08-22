@@ -92,8 +92,8 @@ export function LoginForm() {
       </form>
 
       <div className="text-center">
-        <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+                  <p className="text-sm text-gray-600">
+            Don&apos;t have an account?{' '}
           <button 
             onClick={() => router.push('/register')}
             className="text-blue-600 hover:text-blue-500 font-medium"
