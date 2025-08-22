@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiClient } from '@/lib/apiClient';
 
 interface UseApiState<T> {
@@ -23,10 +23,14 @@ export function useApi<T>(
     error: null,
   });
 
+  // Store the apiCall function in a ref to prevent infinite loops
+  const apiCallRef = useRef(apiCall);
+  apiCallRef.current = apiCall;
+
   const fetchData = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
-      const data = await apiCall();
+      const data = await apiCallRef.current();
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({
@@ -35,7 +39,7 @@ export function useApi<T>(
         error: error instanceof Error ? error.message : 'An error occurred',
       });
     }
-  }, [apiCall]);
+  }, []);
 
   useEffect(() => {
     fetchData();
