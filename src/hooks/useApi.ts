@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import { apiClient } from '@/lib/apiClient';
 
 interface UseApiState<T> {
   data: T | null;
@@ -58,21 +59,21 @@ export function useApi<T>(
 
 // Specialized hooks for common use cases
 export function useDashboardData() {
-  return useApi(() => import('@/lib/api').then(m => m.getDashboardData()));
+  return useApi(() => apiClient.getDashboardData());
 }
 
 export function useCourses() {
-  return useApi(() => import('@/lib/api').then(m => m.getCourses()));
+  return useApi(() => apiClient.getCourses());
 }
 
 export function useCurrentUser() {
-  return useApi(() => import('@/lib/api').then(m => m.getCurrentUser()));
+  return useApi(() => apiClient.getCurrentUser());
 }
 
 export function useTodos() {
-  return useApi(() => import('@/lib/api').then(m => m.getTodos()));
+  return useApi(() => apiClient.getTodos());
 }
 
 export function useRecentFeedback() {
-  return useApi(() => import('@/lib/api').then(m => m.getRecentFeedback()));
+  return useApi(() => apiClient.getRecentFeedback());
 }
