@@ -1,12 +1,20 @@
-import { DashboardData, Course, User, TodoItem, Feedback } from '@/types';
+import { DashboardData, Course, User, TodoItem, Feedback, LoginResponse, RegisterResponse } from '@/types';
 import { API_ENDPOINTS } from './api';
 
 // Generic API client with error handling
 class ApiClient {
+  private getAuthHeaders(): HeadersInit {
+    const token = localStorage.getItem('jwt_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    };
+  }
+
   private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
         ...options.headers,
       },
       ...options,
@@ -25,6 +33,11 @@ class ApiClient {
       clearTimeout(timeoutId);
       
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token expired or invalid
+          this.clearAuth();
+          throw new Error('Authentication expired. Please login again.');
+        }
         throw new Error(`API Error: ${response.status} ${response.statusText}`);
       }
 
@@ -36,6 +49,27 @@ class ApiClient {
       }
       throw error;
     }
+  }
+
+  // Authentication methods
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('jwt_token');
+    return !!token;
+  }
+
+  getStoredUser(): User | null {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return null;
+    try {
+      return JSON.parse(userStr);
+    } catch {
+      return null;
+    }
+  }
+
+  clearAuth(): void {
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user');
   }
 
   // Dashboard data
@@ -88,15 +122,15 @@ class ApiClient {
   }
 
   // Authentication
-  async login(credentials: { email: string; password: string }): Promise<{ token: string; user: User }> {
-    return this.request<{ token: string; user: User }>(API_ENDPOINTS.AUTH.LOGIN, {
+  async login(credentials: { email: string; password: string }): Promise<LoginResponse> {
+    return this.request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
   }
 
-  async register(userData: { email: string; password: string; name: string }): Promise<{ token: string; user: User }> {
-    return this.request<{ token: string; user: User }>(API_ENDPOINTS.AUTH.REGISTER, {
+  async register(userData: { email: string; password: string; name: string }): Promise<RegisterResponse> {
+    return this.request<RegisterResponse>(API_ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
       body: JSON.stringify(userData),
     });
