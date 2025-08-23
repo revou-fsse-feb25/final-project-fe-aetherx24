@@ -374,6 +374,14 @@ class ApiClient {
     });
   }
 
+  // User management
+  async updateUser(id: string, updates: Partial<User>): Promise<User> {
+    return this.request<User>(API_ENDPOINTS.USERS.UPDATE(id), {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    });
+  }
+
   // Utility methods
   async checkHealth(): Promise<HealthCheck> {
     return this.request<HealthCheck>(API_ENDPOINTS.UTILITY.HEALTH);
@@ -449,6 +457,7 @@ export const {
   createSubmission,
   updateSubmission,
   deleteSubmission,
+  updateUser,
   checkHealth,
   checkAuthStatus,
   login,
