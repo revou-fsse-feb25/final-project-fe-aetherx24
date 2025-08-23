@@ -17,7 +17,7 @@ export const API_CONFIG = {
   
   // Production backend (Railway)
   PRODUCTION: {
-    BASE_URL: 'https://shanghairevolmsapi.up.railway.app/api/v1',
+    BASE_URL: 'https://shanghairevolmsapi.up.railway.app',
     TIMEOUT: 10000,
     RETRY_ATTEMPTS: 3,
   },
@@ -43,9 +43,16 @@ export const API_CONFIG = {
   },
 } as const;
 
-// Helper to get API base URL with /api/v1
-// Both local and production backends use /api/v1 prefix
-const getApiUrl = (path: string) => `${API_CONFIG.BASE_URL}/api/v1${path}`;
+// Helper to get API base URL with /api/v1 prefix
+// Avoid double /api/v1 if it's already in the base URL
+const getApiUrl = (path: string) => {
+  const baseUrl = API_CONFIG.BASE_URL;
+  if (baseUrl.includes('/api/v1')) {
+    return `${baseUrl}${path}`;
+  } else {
+    return `${baseUrl}/api/v1${path}`;
+  }
+};
 
 // All endpoints using the active configuration
 export const API_ENDPOINTS = {
