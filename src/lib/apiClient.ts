@@ -420,6 +420,26 @@ class ApiClient {
     });
   }
 
+  async createUser(userData: Omit<User, 'id'>): Promise<User> {
+    return this.request<User>(API_ENDPOINTS.USERS.CREATE, {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async updateUserRole(id: string, role: string): Promise<User> {
+    return this.request<User>(API_ENDPOINTS.USERS.UPDATE_ROLE(id), {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    });
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.USERS.DELETE(id), {
+      method: 'DELETE',
+    });
+  }
+
   // Utility methods
   async checkHealth(): Promise<HealthCheck> {
     return this.request<HealthCheck>(API_ENDPOINTS.UTILITY.HEALTH);
@@ -499,7 +519,10 @@ export const {
   getLessonsByCourse,
   getCourseGrades,
   getAllUsers,
+  createUser,
   updateUser,
+  updateUserRole,
+  deleteUser,
   checkHealth,
   checkAuthStatus,
   login,

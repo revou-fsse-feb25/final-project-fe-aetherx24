@@ -143,30 +143,7 @@ export function LandingPage() {
                </div>
              </div>
  
-             {/* Statistics Card */}
-             <Card className="bg-white border-[#C9C3D9] shadow-lg p-8">
-               <CardContent className="p-0">
-                 <h3 className="text-2xl font-bold mb-8 text-center text-[#2B2E4A]">Platform Statistics</h3>
-                 <div className="space-y-6">
-                   <div className="flex justify-between items-center">
-                     <span className="text-[#2B2E4A]">Total Students</span>
-                     <span className="text-[#6EEBFF] font-bold text-xl">10,000+</span>
-                   </div>
-                   <div className="flex justify-between items-center">
-                     <span className="text-[#2B2E4A]">Available Courses</span>
-                     <span className="text-[#6EEBFF] font-bold text-xl">50+</span>
-                   </div>
-                   <div className="flex justify-between items-center">
-                     <span className="text-[#2B2E4A]">Expert Mentors</span>
-                     <span className="text-[#6EEBFF] font-bold text-xl">25+</span>
-                   </div>
-                   <div className="flex justify-between items-center">
-                     <span className="text-[#2B2E4A]">Satisfaction Rate</span>
-                     <span className="text-[#6EEBFF] font-bold text-xl">98%</span>
-                   </div>
-                 </div>
-               </CardContent>
-             </Card>
+             
            </div>
          </div>
        </section>
@@ -202,16 +179,14 @@ export function LandingPage() {
                </div>
              </div>
  
-             {/* Courses */}
-             <div>
-               <h4 className="font-semibold mb-4 text-white">Courses</h4>
-               <ul className="space-y-2 text-[#C9C3D9]">
-                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Software Engineering</a></li>
-                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Full Stack Development</a></li>
-                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Digital Marketing</a></li>
-                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Data Analytics</a></li>
-               </ul>
-             </div>
+                         {/* Courses */}
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Courses</h4>
+              <ul className="space-y-2 text-[#C9C3D9]">
+                <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Introduction to Computer Science</a></li>
+                <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Web Development Fundamentals</a></li>
+              </ul>
+            </div>
  
              {/* Support */}
              <div>

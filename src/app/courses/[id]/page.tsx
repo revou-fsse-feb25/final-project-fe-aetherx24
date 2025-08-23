@@ -57,7 +57,7 @@ export default function CourseDetailPage() {
             const userEnrollment = enrollments.find(enrollment => enrollment.courseId === courseId);
             setEnrollment(userEnrollment || null);
           } catch {
-            console.log('Could not fetch enrollment status');
+            // Silently handle enrollment fetch errors
           }
         }
       } catch (err) {
@@ -85,8 +85,7 @@ export default function CourseDetailPage() {
       
       // Show success message
       alert('Successfully enrolled in the course!');
-    } catch (err) {
-      console.error('Enrollment failed:', err);
+    } catch {
       alert('Failed to enroll in the course. Please try again.');
     } finally {
       setEnrolling(false);

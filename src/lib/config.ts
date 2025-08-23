@@ -71,6 +71,7 @@ export const API_ENDPOINTS = {
     BY_ID: (id: string) => getApiUrl(`/users/${id}`),
     CREATE: getApiUrl('/users'),
     UPDATE: (id: string) => getApiUrl(`/users/${id}`),
+    UPDATE_ROLE: (id: string) => getApiUrl(`/users/${id}/role`),
     DELETE: (id: string) => getApiUrl(`/users/${id}`),
   },
   
