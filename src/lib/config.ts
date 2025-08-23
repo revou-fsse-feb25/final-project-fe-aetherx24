@@ -106,6 +106,7 @@ export const API_ENDPOINTS = {
   MODULES: {
     ALL: getApiUrl('/modules'),
     BY_ID: (id: string) => getApiUrl(`/modules/${id}`),
+    BY_COURSE: (courseId: string) => getApiUrl(`/modules/course/${courseId}`),
     CREATE: getApiUrl('/modules'),
     UPDATE: (id: string) => getApiUrl(`/modules/${id}`),
     DELETE: (id: string) => getApiUrl(`/modules/${id}`),
@@ -114,6 +115,7 @@ export const API_ENDPOINTS = {
   LESSONS: {
     ALL: getApiUrl('/lessons'),
     BY_ID: (id: string) => getApiUrl(`/lessons/${id}`),
+    BY_COURSE: (courseId: string) => getApiUrl(`/lessons/course/${courseId}`),
     CREATE: getApiUrl('/lessons'),
     UPDATE: (id: string) => getApiUrl(`/lessons/${id}`),
     DELETE: (id: string) => getApiUrl(`/lessons/${id}`),

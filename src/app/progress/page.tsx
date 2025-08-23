@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, Target, TrendingUp, BookOpen, Award } from "lucide-react";
+import { Trophy, Target, BookOpen, Award } from "lucide-react";
 import { Course, CourseGrade } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 

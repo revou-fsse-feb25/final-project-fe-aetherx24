@@ -107,7 +107,7 @@ export function LoginForm() {
         </form>
         
         <div className="mt-4 text-center text-sm text-[#2B2E4A]">
-          <p>Don't have an account?{" "}
+          <p>Don&apos;t have an account?{" "}
             <Link href="/register" className="text-[#6EEBFF] hover:underline">
               Sign up
             </Link>

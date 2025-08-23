@@ -12,10 +12,9 @@ import {
   BarChart3,
   Shield,
   Plus,
-  Edit,
-  Trash2
+  Edit
 } from "lucide-react";
-import { User, Course, Assignment } from "@/types";
+import { User, Course } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
 
@@ -48,7 +47,7 @@ export default function AdminPage() {
           totalUsers: usersData.length,
           totalCourses: coursesData.length,
           totalAssignments: assignmentsData.length,
-          activeUsers: usersData.filter(u => u.status === 'active').length
+          activeUsers: usersData.filter((u: User) => u.status === 'active').length
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load admin data');
@@ -70,7 +69,7 @@ export default function AdminPage() {
           <div className="text-center py-12">
             <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-            <p className="text-gray-600">You don't have permission to access the admin dashboard.</p>
+            <p className="text-gray-600">You don&apos;t have permission to access the admin dashboard.</p>
           </div>
         </div>
       </div>

@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { User, Edit, Save, X, Mail, Calendar, Shield } from "lucide-react";
-import { User as UserType } from "@/types";
+import { User, Edit, Save, X, Shield } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
 

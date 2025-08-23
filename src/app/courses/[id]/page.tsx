@@ -11,13 +11,11 @@ import {
   BookOpen, 
   Users, 
   Calendar, 
-  Clock, 
   Play, 
   CheckCircle, 
   Lock,
   FileText,
-  Video,
-  Download
+  Video
 } from "lucide-react";
 import { Course, Module, Lesson } from "@/types";
 import { apiClient } from "@/lib/apiClient";
@@ -38,7 +36,7 @@ export default function CourseDetailPage() {
       try {
         setLoading(true);
         const [courseData, modulesData, lessonsData] = await Promise.all([
-          apiClient.getCourseById(courseId),
+          apiClient.getCourse(courseId),
           apiClient.getModulesByCourse(courseId),
           apiClient.getLessonsByCourse(courseId)
         ]);
@@ -62,7 +60,7 @@ export default function CourseDetailPage() {
     try {
       await apiClient.createEnrollment(courseId);
       // Refresh course data to show enrollment status
-      const courseData = await apiClient.getCourseById(courseId);
+      const courseData = await apiClient.getCourse(courseId);
       setCourse(courseData);
     } catch (err) {
       console.error('Enrollment failed:', err);
@@ -194,7 +192,7 @@ export default function CourseDetailPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>What You'll Learn</CardTitle>
+                  <CardTitle>What You&apos;ll Learn</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">

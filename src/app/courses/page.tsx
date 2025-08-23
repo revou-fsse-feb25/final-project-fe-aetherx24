@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, Users, Calendar, Clock, Star } from "lucide-react";
+import { BookOpen, Calendar, Star } from "lucide-react";
 import { Course } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 

@@ -4,10 +4,9 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { 
   Trophy, 
-  TrendingUp, 
+  TrendingUp,
   BookOpen, 
   Award, 
   BarChart3,
@@ -72,7 +71,6 @@ export default function GradesPage() {
   };
 
   const isTeacher = user?.role === 'teacher';
-  const isStudent = user?.role === 'student';
 
   if (loading) {
     return (
@@ -267,7 +265,7 @@ export default function GradesPage() {
                           <span className="font-medium">Course:</span> {course?.title || 'N/A'}
                         </div>
                         <div>
-                          <span className="font-medium">Graded On:</span> {grade.gradedAt ? new Date(grade.gradedAt).toLocaleDateString() : 'N/A'}
+                          <span className="font-medium">Graded On:</span> {grade.gradeDate ? new Date(grade.gradeDate).toLocaleDateString() : 'N/A'}
                         </div>
                         <div>
                           <span className="font-medium">Max Points:</span> {grade.maxPoints || 'N/A'}

@@ -12,6 +12,9 @@ import {
   Assignment,
   Submission,
   Enrollment,
+  Module,
+  Lesson,
+  CourseGrade,
   HealthCheck,
   AuthStatus
 } from '@/types';
@@ -374,7 +377,26 @@ class ApiClient {
     });
   }
 
+  // Modules
+  async getModulesByCourse(courseId: string): Promise<Module[]> {
+    return this.request<Module[]>(API_ENDPOINTS.MODULES.BY_COURSE(courseId));
+  }
+
+  // Lessons
+  async getLessonsByCourse(courseId: string): Promise<Lesson[]> {
+    return this.request<Lesson[]>(API_ENDPOINTS.LESSONS.BY_COURSE(courseId));
+  }
+
+  // Grades
+  async getCourseGrades(): Promise<CourseGrade[]> {
+    return this.request<CourseGrade[]>(API_ENDPOINTS.GRADES.COURSE_GRADES.ALL);
+  }
+
   // User management
+  async getAllUsers(): Promise<User[]> {
+    return this.request<User[]>(API_ENDPOINTS.USERS.ALL);
+  }
+
   async updateUser(id: string, updates: Partial<User>): Promise<User> {
     return this.request<User>(API_ENDPOINTS.USERS.UPDATE(id), {
       method: 'PATCH',
@@ -457,6 +479,10 @@ export const {
   createSubmission,
   updateSubmission,
   deleteSubmission,
+  getModulesByCourse,
+  getLessonsByCourse,
+  getCourseGrades,
+  getAllUsers,
   updateUser,
   checkHealth,
   checkAuthStatus,

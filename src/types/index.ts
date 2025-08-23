@@ -9,6 +9,8 @@ export interface Course {
   status: 'active' | 'completed' | 'upcoming';
   progress?: number;
   imageUrl?: string;
+  studentCount?: number;
+  duration?: string;
 }
 
 export interface User {
@@ -18,6 +20,7 @@ export interface User {
   lastName: string;
   fullName: string;
   role: 'student' | 'teacher' | 'admin';
+  status?: 'active' | 'inactive' | 'pending';
   avatar?: string;
 }
 
@@ -131,9 +134,11 @@ export interface Submission {
   studentId: string;
   content: string;
   submittedAt: string;
+  gradedAt?: string;
   grade?: number;
   feedback?: string;
   status: 'submitted' | 'graded' | 'late';
+  attachments?: string[];
 }
 
 // Enrollment types
@@ -163,8 +168,11 @@ export interface Lesson {
   description: string;
   moduleId: string;
   content: string;
+  type: 'video' | 'document' | 'quiz' | 'text';
   order: number;
   duration?: number;
+  isCompleted?: boolean;
+  isLocked?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -174,9 +182,14 @@ export interface CourseGrade {
   id: string;
   studentId: string;
   courseId: string;
+  assignmentId?: string;
+  assignmentTitle?: string;
+  courseTitle?: string;
   grade: number;
+  maxPoints?: number;
   letterGrade: string;
   gradeDate: string;
+  status?: 'graded' | 'pending' | 'submitted';
   comments?: string;
 }
 

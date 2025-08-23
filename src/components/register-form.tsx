@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mail, Lock, ArrowLeft } from "lucide-react";
+import { User, ArrowLeft } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import Link from "next/link";
 

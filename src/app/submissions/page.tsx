@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
@@ -54,14 +54,15 @@ export default function SubmissionsPage() {
   }, []);
 
   const handleSubmitAssignment = async () => {
-    if (!selectedAssignment || !submissionText.trim()) return;
+    if (!selectedAssignment || !submissionText.trim() || !user) return;
 
     try {
       setSubmitting(true);
       const newSubmission = await apiClient.createSubmission({
+        studentId: user.id,
         assignmentId: selectedAssignment,
         content: submissionText,
-        submittedAt: new Date().toISOString()
+        status: 'submitted'
       });
       
       setSubmissions(prev => [newSubmission, ...prev]);
@@ -266,10 +267,10 @@ export default function SubmissionsPage() {
                         </div>
                       )}
                       
-                      {submission.score !== undefined && (
+                      {submission.grade !== undefined && (
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-2" />
-                          <span>Score: {submission.score}/{assignment?.maxPoints || 'N/A'}</span>
+                          <span>Score: {submission.grade}/{assignment?.maxPoints || 'N/A'}</span>
                         </div>
                       )}
                     </div>
