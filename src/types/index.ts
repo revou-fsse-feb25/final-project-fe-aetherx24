@@ -13,12 +13,12 @@ export interface Course {
 
 export interface User {
   id: string;
-  name: string;
   email: string;
-  avatar?: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
   role: 'student' | 'teacher' | 'admin';
-  firstName?: string;
-  lastName?: string;
+  avatar?: string;
 }
 
 export interface TodoItem {
@@ -90,8 +90,20 @@ export interface AdminDashboardData extends DashboardData {
 
 // Authentication response types
 export interface LoginResponse {
-  jwt_token: string;
-  user: User;
+  success: boolean;
+  message: string;
+  access_token: string;        // JWT token
+  token_type: string;          // "Bearer"
+  expires_in: number;          // 86400 (24 hours)
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'student' | 'teacher' | 'admin';
+    fullName: string;
+  };
+  timestamp: string;
 }
 
 export interface RegisterResponse {

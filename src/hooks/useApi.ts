@@ -126,13 +126,18 @@ export function useAuth() {
       const response = await apiClient.login(credentials);
       console.log('🔍 Login: API response received:', response);
       
+      // Validate response
+      if (!response || !response.success || !response.access_token || !response.user) {
+        throw new Error('Invalid login response: missing success, token or user data');
+      }
+      
       // Store in localStorage for client-side access
-      localStorage.setItem('jwt_token', response.jwt_token);
+      localStorage.setItem('jwt_token', response.access_token);
       localStorage.setItem('user', JSON.stringify(response.user));
       console.log('🔍 Login: Stored in localStorage');
-      
+
       // Also store in cookies for middleware access
-      setCookie('jwt_token', response.jwt_token, 7); // 7 days
+      setCookie('jwt_token', response.access_token, 7); // 7 days
       setCookie('user', JSON.stringify(response.user), 7);
       console.log('🔍 Login: Stored in cookies');
       
@@ -159,10 +164,22 @@ export function useAuth() {
 
   // Helper function to set cookies
   const setCookie = (name: string, value: string, days: number = 7): void => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && value) {
       const expires = new Date();
       expires.setDate(expires.getDate() + days);
-      document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+      const cookieString = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+      document.cookie = cookieString;
+      
+      // Safe substring for logging
+      const displayValue = value && value.length > 20 ? value.substring(0, 20) + '...' : value;
+      console.log('🔍 setCookie: Setting cookie:', { name, value: displayValue, expires: expires.toUTCString() });
+      
+      // Verify cookie was set
+      const cookies = document.cookie.split(';');
+      const foundCookie = cookies.find(cookie => cookie.trim().startsWith(`${name}=`));
+      console.log('🔍 setCookie: Verification - cookie found:', foundCookie ? 'YES' : 'NO');
+    } else {
+      console.error('🔍 setCookie: Invalid parameters:', { name, value, hasWindow: typeof window !== 'undefined' });
     }
   };
 

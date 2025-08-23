@@ -23,17 +23,33 @@ export function LoginForm() {
 
     try {
       if (email && password) {
-        console.log("Attempting login...");
+        console.log("🔍 LoginForm: Attempting login with:", { email, password: '***' });
+        
         // Use the auth hook for login
-        await login({ email, password });
-        console.log("Login successful! Middleware will handle redirect...");
-        // Trigger a page refresh to let middleware handle the redirect
-        window.location.href = "/dashboard";
+        const response = await login({ email, password });
+        console.log("🔍 LoginForm: Login response received:", response);
+        
+        // Check if token was stored
+        const storedToken = localStorage.getItem('jwt_token');
+        const storedUser = localStorage.getItem('user');
+        console.log("🔍 LoginForm: After login - localStorage token:", storedToken ? 'EXISTS' : 'NOT FOUND');
+        console.log("🔍 LoginForm: After login - localStorage user:", storedUser ? 'EXISTS' : 'NOT FOUND');
+        
+        if (storedToken && storedUser) {
+          console.log("🔍 LoginForm: Token stored successfully, redirecting...");
+          // Wait a moment for state to update, then redirect
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 100);
+        } else {
+          console.error("🔍 LoginForm: Token storage failed!");
+          setError("Login succeeded but token storage failed. Please try again.");
+        }
       } else {
         setError("Please fill in all fields");
       }
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("🔍 LoginForm: Login error:", err);
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
     } finally {
       setLoading(false);

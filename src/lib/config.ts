@@ -43,122 +43,126 @@ export const API_CONFIG = {
   },
 } as const;
 
+// Helper to get API base URL with /api/v1
+// Both local and production backends use /api/v1 prefix
+const getApiUrl = (path: string) => `${API_CONFIG.BASE_URL}/api/v1${path}`;
+
 // All endpoints using the active configuration
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: `${API_CONFIG.BASE_URL}/auth/login`,
-    REGISTER: `${API_CONFIG.BASE_URL}/auth/register`,
-    REFRESH: `${API_CONFIG.BASE_URL}/auth/refresh`,
-    LOGOUT: `${API_CONFIG.BASE_URL}/auth/logout`,
+    LOGIN: getApiUrl('/auth/login'),
+    REGISTER: getApiUrl('/auth/register'),
+    REFRESH: getApiUrl('/auth/refresh'),
+    LOGOUT: getApiUrl('/auth/logout'),
   },
   
   // User Management
   USERS: {
-    PROFILE: `${API_CONFIG.BASE_URL}/users/profile`,
-    ALL: `${API_CONFIG.BASE_URL}/users`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/users/${id}`,
-    CREATE: `${API_CONFIG.BASE_URL}/users`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/users/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/users/${id}`,
+    PROFILE: getApiUrl('/users/profile'),
+    ALL: getApiUrl('/users'),
+    BY_ID: (id: string) => getApiUrl(`/users/${id}`),
+    CREATE: getApiUrl('/users'),
+    UPDATE: (id: string) => getApiUrl(`/users/${id}`),
+    DELETE: (id: string) => getApiUrl(`/users/${id}`),
   },
   
   // Dashboard & Analytics
   DASHBOARD: {
-    MAIN: `${API_CONFIG.BASE_URL}/dashboard`,
-    STUDENT: `${API_CONFIG.BASE_URL}/dashboard/student`,
-    TEACHER: `${API_CONFIG.BASE_URL}/dashboard/teacher`,
-    ADMIN: `${API_CONFIG.BASE_URL}/dashboard/admin`,
-    TODOS: `${API_CONFIG.BASE_URL}/todos`,
-    FEEDBACK: `${API_CONFIG.BASE_URL}/feedback/recent`,
+    MAIN: getApiUrl('/dashboard'),
+    STUDENT: getApiUrl('/dashboard/student'),
+    TEACHER: getApiUrl('/dashboard/teacher'),
+    ADMIN: getApiUrl('/dashboard/admin'),
+    TODOS: getApiUrl('/todos'),
+    FEEDBACK: getApiUrl('/feedback/recent'),
   },
   
   // Course Management
   COURSES: {
-    ALL: `${API_CONFIG.BASE_URL}/courses`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/courses/${id}`,
-    CREATE: `${API_CONFIG.BASE_URL}/courses`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/courses/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/courses/${id}`,
+    ALL: getApiUrl('/courses'),
+    BY_ID: (id: string) => getApiUrl(`/courses/${id}`),
+    CREATE: getApiUrl('/courses'),
+    UPDATE: (id: string) => getApiUrl(`/courses/${id}`),
+    DELETE: (id: string) => getApiUrl(`/courses/${id}`),
     // Role-specific endpoints
-    TAUGHT_BY_ME: `${API_CONFIG.BASE_URL}/courses/taught-by-me`,
-    ENROLLED_IN: `${API_CONFIG.BASE_URL}/courses/enrolled-in`,
-    AVAILABLE: `${API_CONFIG.BASE_URL}/courses/available`,
+    TAUGHT_BY_ME: getApiUrl('/courses/taught-by-me'),
+    ENROLLED_IN: getApiUrl('/courses/enrolled-in'),
+    AVAILABLE: getApiUrl('/courses/available'),
   },
   
   // Enrollment Management
   ENROLLMENTS: {
-    MY_ENROLLMENTS: `${API_CONFIG.BASE_URL}/enrollments/my-enrollments`,
-    ALL: `${API_CONFIG.BASE_URL}/enrollments`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/enrollments/${id}`,
-    BY_STUDENT: (studentId: string) => `${API_CONFIG.BASE_URL}/enrollments/student/${studentId}`,
-    BY_COURSE: (courseId: string) => `${API_CONFIG.BASE_URL}/enrollments/course/${courseId}`,
-    CREATE: `${API_CONFIG.BASE_URL}/enrollments`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/enrollments/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/enrollments/${id}`,
+    MY_ENROLLMENTS: getApiUrl('/enrollments/my-enrollments'),
+    ALL: getApiUrl('/enrollments'),
+    BY_ID: (id: string) => getApiUrl(`/enrollments/${id}`),
+    BY_STUDENT: (studentId: string) => getApiUrl(`/enrollments/student/${studentId}`),
+    BY_COURSE: (courseId: string) => getApiUrl(`/enrollments/course/${courseId}`),
+    CREATE: getApiUrl('/enrollments'),
+    UPDATE: (id: string) => getApiUrl(`/enrollments/${id}`),
+    DELETE: (id: string) => getApiUrl(`/enrollments/${id}`),
   },
   
   // Content Management
   MODULES: {
-    ALL: `${API_CONFIG.BASE_URL}/modules`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/modules/${id}`,
-    CREATE: `${API_CONFIG.BASE_URL}/modules`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/modules/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/modules/${id}`,
+    ALL: getApiUrl('/modules'),
+    BY_ID: (id: string) => getApiUrl(`/modules/${id}`),
+    CREATE: getApiUrl('/modules'),
+    UPDATE: (id: string) => getApiUrl(`/modules/${id}`),
+    DELETE: (id: string) => getApiUrl(`/modules/${id}`),
   },
   
   LESSONS: {
-    ALL: `${API_CONFIG.BASE_URL}/lessons`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/lessons/${id}`,
-    CREATE: `${API_CONFIG.BASE_URL}/lessons`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/lessons/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/lessons/${id}`,
+    ALL: getApiUrl('/lessons'),
+    BY_ID: (id: string) => getApiUrl(`/lessons/${id}`),
+    CREATE: getApiUrl('/lessons'),
+    UPDATE: (id: string) => getApiUrl(`/lessons/${id}`),
+    DELETE: (id: string) => getApiUrl(`/lessons/${id}`),
   },
   
   // Assessment System
   ASSIGNMENTS: {
-    ALL: `${API_CONFIG.BASE_URL}/assignments`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/assignments/${id}`,
-    CREATE: `${API_CONFIG.BASE_URL}/assignments`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/assignments/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/assignments/${id}`,
+    ALL: getApiUrl('/assignments'),
+    BY_ID: (id: string) => getApiUrl(`/assignments/${id}`),
+    CREATE: getApiUrl('/assignments'),
+    UPDATE: (id: string) => getApiUrl(`/assignments/${id}`),
+    DELETE: (id: string) => getApiUrl(`/assignments/${id}`),
     // Role-specific endpoints
-    MY_ASSIGNMENTS: `${API_CONFIG.BASE_URL}/assignments/my-assignments`,
-    ASSIGNMENTS_FOR_COURSE: (courseId: string) => `${API_CONFIG.BASE_URL}/assignments/course/${courseId}`,
-    PENDING_GRADING: `${API_CONFIG.BASE_URL}/assignments/pending-grading`,
+    MY_ASSIGNMENTS: getApiUrl('/assignments/my-assignments'),
+    ASSIGNMENTS_FOR_COURSE: (courseId: string) => getApiUrl(`/assignments/course/${courseId}`),
+    PENDING_GRADING: getApiUrl('/assignments/pending-grading'),
   },
   
   SUBMISSIONS: {
-    ALL: `${API_CONFIG.BASE_URL}/submissions`,
-    BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/submissions/${id}`,
-    CREATE: `${API_CONFIG.BASE_URL}/submissions`,
-    UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/submissions/${id}`,
-    DELETE: (id: string) => `${API_CONFIG.BASE_URL}/submissions/${id}`,
+    ALL: getApiUrl('/submissions'),
+    BY_ID: (id: string) => getApiUrl(`/submissions/${id}`),
+    CREATE: getApiUrl('/submissions'),
+    UPDATE: (id: string) => getApiUrl(`/submissions/${id}`),
+    DELETE: (id: string) => getApiUrl(`/submissions/${id}`),
   },
   
   // Grading System
   GRADES: {
     COURSE_GRADES: {
-      ALL: `${API_CONFIG.BASE_URL}/course-grades`,
-      BY_ID: (id: string) => `${API_CONFIG.BASE_URL}/course-grades/${id}`,
-      CREATE: `${API_CONFIG.BASE_URL}/course-grades`,
-      UPDATE: (id: string) => `${API_CONFIG.BASE_URL}/course-grades/${id}`,
-      DELETE: (id: string) => `${API_CONFIG.BASE_URL}/course-grades/${id}`,
+      ALL: getApiUrl('/course-grades'),
+      BY_ID: (id: string) => getApiUrl(`/course-grades/${id}`),
+      CREATE: getApiUrl('/course-grades'),
+      UPDATE: (id: string) => getApiUrl(`/course-grades/${id}`),
+      DELETE: (id: string) => getApiUrl(`/course-grades/${id}`),
     },
   },
   
   // Utility
   UTILITY: {
-    HEALTH: `${API_CONFIG.BASE_URL}/health`,
-    TEST: `${API_CONFIG.BASE_URL}/test`,
-    AUTH_STATUS: `${API_CONFIG.BASE_URL}/auth-status`,
+    HEALTH: `${API_CONFIG.BASE_URL}/health`, // Health check is at root level
+    TEST: getApiUrl('/test'),
+    AUTH_STATUS: getApiUrl('/auth-status'),
   },
 
   // Role-based dashboard data
   DASHBOARD_DATA: {
-    STUDENT: `${API_CONFIG.BASE_URL}/dashboard/student/data`,
-    TEACHER: `${API_CONFIG.BASE_URL}/dashboard/teacher/data`,
-    ADMIN: `${API_CONFIG.BASE_URL}/dashboard/admin/data`,
+    STUDENT: getApiUrl('/dashboard/student/data'),
+    TEACHER: getApiUrl('/dashboard/teacher/data'),
+    ADMIN: getApiUrl('/dashboard/admin/data'),
   },
 } as const;
 

@@ -70,7 +70,8 @@ class ApiClient {
       url,
       method: options.method || 'GET',
       headers: config.headers,
-      hasAuth: !!(authHeaders as Record<string, string>).Authorization
+      hasAuth: !!(authHeaders as Record<string, string>).Authorization,
+      body: options.body ? 'Has body' : 'No body'
     });
 
     try {
@@ -85,16 +86,29 @@ class ApiClient {
       
       clearTimeout(timeoutId);
       
+      console.log('🔍 API Response:', {
+        url,
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.log('🔍 API Error response body:', errorText);
+        
         if (response.status === 401) {
           // Token expired or invalid
           this.clearAuth();
           throw new Error('Authentication expired. Please login again.');
         }
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        throw new Error(`API Error: ${response.status} ${response.statusText}. Response: ${errorText}`);
       }
 
-      return await response.json();
+      const responseData = await response.json();
+      console.log('🔍 API Response data:', responseData);
+      return responseData;
     } catch (error) {
       console.error('API request failed:', error);
       if (error instanceof Error && error.name === 'AbortError') {
@@ -371,10 +385,29 @@ class ApiClient {
 
   // Authentication
   async login(credentials: { email: string; password: string }): Promise<LoginResponse> {
-    return this.request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    });
+    console.log('🔍 ApiClient: Login request to:', API_ENDPOINTS.AUTH.LOGIN);
+    console.log('🔍 ApiClient: Login credentials:', { email: credentials.email, password: '***' });
+    
+    try {
+      const response = await this.request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      });
+      console.log('🔍 ApiClient: Raw login response:', response);
+      console.log('🔍 ApiClient: Response type:', typeof response);
+      console.log('🔍 ApiClient: Has success:', !!response?.success);
+      console.log('🔍 ApiClient: Has access_token:', !!response?.access_token);
+      console.log('🔍 ApiClient: Has user:', !!response?.user);
+      
+      if (response) {
+        console.log('🔍 ApiClient: Response keys:', Object.keys(response));
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('🔍 ApiClient: Login request failed:', error);
+      throw error;
+    }
   }
 
   async register(userData: { email: string; password: string; name: string }): Promise<RegisterResponse> {
