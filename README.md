@@ -1,4 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Luminark LMS
+
+A modern Learning Management System built with Next.js 15, featuring a beautiful galaxy purple theme and comprehensive learning features.
+
+## Features
+
+- 🎨 **Beautiful UI**: Modern design with galaxy purple theme and grey backgrounds
+- 📚 **Course Management**: Browse, enroll, and track course progress
+- 📝 **Assignment System**: Submit and review assignments
+- 📊 **Progress Tracking**: Monitor learning progress and grades
+- 👥 **Role-Based Access**: Student, Teacher, and Admin dashboards
+- 🔐 **Secure Authentication**: JWT-based authentication system
+- 📱 **Responsive Design**: Works perfectly on all devices
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS v4
+- **UI Components**: Shadcn UI
+- **Authentication**: Custom JWT implementation
+- **State Management**: React Hooks
+- **TypeScript**: Full type safety
 
 ## Getting Started
 
@@ -14,7 +35,7 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3002](http://localhost:3002) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

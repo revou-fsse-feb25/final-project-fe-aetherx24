@@ -59,6 +59,12 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
+                 <div className="flex items-center justify-center space-x-3 mb-4">
+           <div className="w-10 h-10 bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] rounded-lg flex items-center justify-center">
+             <span className="text-white font-bold text-xl">L</span>
+           </div>
+           <span className="text-xl font-bold text-[#2B2E4A]">Luminark</span>
+         </div>
         <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
         <CardDescription className="text-center">
           Enter your credentials to access your account
