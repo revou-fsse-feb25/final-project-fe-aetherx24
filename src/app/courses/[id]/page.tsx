@@ -20,6 +20,7 @@ import {
 import { Course, Module, Lesson, Enrollment } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
+import { Navbar } from "@/components/Navbar";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -107,11 +108,14 @@ export default function CourseDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading course...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading course...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -120,18 +124,21 @@ export default function CourseDetailPage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Course</div>
-            <p className="text-gray-600">{error || 'Course not found'}</p>
-            <Button 
-              onClick={() => window.location.reload()} 
-              className="mt-4"
-              variant="outline"
-            >
-              Try Again
-            </Button>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Course</div>
+              <p className="text-gray-600">{error || 'Course not found'}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="mt-4"
+                variant="outline"
+              >
+                Try Again
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -141,8 +148,10 @@ export default function CourseDetailPage() {
   const isEnrolled = enrollment !== null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
         {/* Course Header */}
         <div className="mb-8">
           <div className="flex items-start justify-between mb-4">
@@ -361,6 +370,7 @@ export default function CourseDetailPage() {
             </Card>
           </TabsContent>
         </Tabs>
+        </div>
       </div>
     </div>
   );

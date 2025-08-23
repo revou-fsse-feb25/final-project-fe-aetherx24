@@ -9,6 +9,7 @@ import { BookOpen, Calendar, Star } from "lucide-react";
 import { Course, Enrollment } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
+import { Navbar } from "@/components/Navbar";
 
 export default function CoursesPage() {
   const { user } = useAuth();
@@ -110,11 +111,14 @@ export default function CoursesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading courses...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading courses...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -123,18 +127,21 @@ export default function CoursesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Courses</div>
-            <p className="text-gray-600">{error}</p>
-            <Button 
-              onClick={() => window.location.reload()} 
-              className="mt-4"
-              variant="outline"
-            >
-              Try Again
-            </Button>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Courses</div>
+              <p className="text-gray-600">{error}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="mt-4"
+                variant="outline"
+              >
+                Try Again
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -142,8 +149,10 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Available Courses</h1>
@@ -261,6 +270,7 @@ export default function CoursesPage() {
             <p className="text-gray-600">Check back later for new course offerings.</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

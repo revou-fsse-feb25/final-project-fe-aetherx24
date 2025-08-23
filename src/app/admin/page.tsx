@@ -17,6 +17,7 @@ import {
 import { User, Course } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
+import { Navbar } from "@/components/Navbar";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -64,12 +65,15 @@ export default function AdminPage() {
   // Check if user is admin
   if (!user || user.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-            <p className="text-gray-600">You don&apos;t have permission to access the admin dashboard.</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+              <p className="text-gray-600">You don&apos;t have permission to access the admin dashboard.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -78,11 +82,14 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -91,18 +98,21 @@ export default function AdminPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Admin Dashboard</div>
-            <p className="text-gray-600">{error}</p>
-            <Button 
-              onClick={() => window.location.reload()} 
-              className="mt-4"
-              variant="outline"
-            >
-              Try Again
-            </Button>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Admin Dashboard</div>
+              <p className="text-gray-600">{error}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="mt-4"
+                variant="outline"
+              >
+                Try Again
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -110,8 +120,10 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -330,6 +342,7 @@ export default function AdminPage() {
             )}
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

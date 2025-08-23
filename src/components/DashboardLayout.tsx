@@ -5,12 +5,42 @@ import Sidebar from './Sidebar';
 import DashboardHeader from './DashboardHeader';
 import CourseCard from './CourseCard';
 import RightSidebar from './RightSidebar';
-import { useDashboardData } from '@/hooks/useApi';
+import { useApi } from '@/hooks/useApi';
 import { Course } from '@/types';
+import { apiClient } from '@/lib/apiClient';
 
 export default function DashboardLayout() {
-    const { data: dashboardData, loading, error } = useDashboardData();
+    const { data: enrollments, loading: coursesLoading, error: coursesError } = useApi(() => apiClient.getMyEnrollments());
+    const { data: userData, loading: userLoading, error: userError } = useApi(() => apiClient.getCurrentUser());
+    const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
     const [timeoutError, setTimeoutError] = useState(false);
+    
+    // Combine loading states
+    const loading = coursesLoading || userLoading;
+    const error = coursesError || userError;
+    
+    // Fetch course details for enrollments
+    useEffect(() => {
+        const fetchCourseDetails = async () => {
+            if (enrollments && enrollments.length > 0) {
+                try {
+                    const coursePromises = enrollments.map(enrollment => 
+                        apiClient.getCourse(enrollment.courseId)
+                    );
+                    const courses = await Promise.all(coursePromises);
+                    setEnrolledCourses(courses);
+                } catch (err) {
+                    console.error('Failed to fetch course details:', err);
+                    // Set empty array if course fetch fails
+                    setEnrolledCourses([]);
+                }
+            } else {
+                setEnrolledCourses([]);
+            }
+        };
+        
+        fetchCourseDetails();
+    }, [enrollments]);
 
     // Add timeout protection to prevent infinite loading
     useEffect(() => {
@@ -74,8 +104,8 @@ export default function DashboardLayout() {
         );
     }
 
-    // Add fallback for when dashboardData is null
-    if (!dashboardData) {
+    // Add fallback for when data is null
+    if (!enrolledCourses || !userData) {
         return (
             <div className="flex min-h-screen items-center justify-center">
                 <div className="text-center">
@@ -102,17 +132,17 @@ export default function DashboardLayout() {
         <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 flex flex-col">
-                <DashboardHeader user={dashboardData?.user} />
+                <DashboardHeader user={userData} />
                 <div className="flex-1 flex p-8">
                     <div className="flex-1">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">My Courses</h2>
-                            {dashboardData?.courses && dashboardData.courses.length > 0 ? (
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">My Enrolled Courses</h2>
+                            {enrolledCourses && enrolledCourses.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {dashboardData.courses.map((course) => (
+                                    {enrolledCourses.map((enrollment) => (
                                         <CourseCard 
-                                            key={course.id} 
-                                            course={course} 
+                                            key={enrollment.id} 
+                                            course={enrollment as Course} 
                                             onClick={handleCourseClick}
                                         />
                                     ))}
@@ -120,16 +150,27 @@ export default function DashboardLayout() {
                             ) : (
                                 <div className="text-center py-12">
                                     <div className="text-gray-400 text-6xl mb-4">📚</div>
-                                    <h3 className="text-lg font-medium text-gray-600 mb-2">No courses yet</h3>
+                                    <h3 className="text-lg font-medium text-gray-600 mb-2">No enrolled courses yet</h3>
                                     <p className="text-gray-500">Start your learning journey by enrolling in a course.</p>
+                                    <button 
+                                        onClick={() => window.location.href = '/courses'} 
+                                        className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+                                    >
+                                        Browse Courses
+                                    </button>
                                 </div>
                             )}
                         </div>
                     </div>
                     <RightSidebar 
-                        todos={dashboardData?.todos} 
-                        recentFeedback={dashboardData?.recentFeedback}
-                        stats={dashboardData?.stats}
+                        todos={[]} 
+                        recentFeedback={[]}
+                        stats={{
+                            totalCourses: enrolledCourses?.length || 0,
+                            completedCourses: 0,
+                            activeCourses: enrolledCourses?.length || 0,
+                            averageGrade: 0
+                        }}
                     />
                 </div>
             </div>

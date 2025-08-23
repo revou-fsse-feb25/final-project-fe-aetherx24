@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Trophy, Target, BookOpen, Award } from "lucide-react";
 import { Course, CourseGrade } from "@/types";
 import { apiClient } from "@/lib/apiClient";
+import { Navbar } from "@/components/Navbar";
 
 export default function ProgressPage() {
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
@@ -74,11 +75,14 @@ export default function ProgressPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading progress...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading progress...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -87,11 +91,14 @@ export default function ProgressPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-red-600 text-xl mb-8">⚠️ Error Loading Progress</div>
-            <p className="text-gray-600">{error}</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="text-red-600 text-xl mb-8">⚠️ Error Loading Progress</div>
+              <p className="text-gray-600">{error}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -101,8 +108,10 @@ export default function ProgressPage() {
   const overallProgress = calculateOverallProgress();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Learning Progress</h1>
@@ -223,6 +232,7 @@ export default function ProgressPage() {
             <p className="text-gray-600">Enroll in courses to start tracking your progress.</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

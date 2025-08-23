@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, Edit, Save, X, Shield } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
+import { Navbar } from "@/components/Navbar";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -79,11 +80,14 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-red-600 text-xl mb-4">⚠️ User not found</div>
-            <p className="text-gray-600">Please log in to view your profile.</p>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center py-12">
+              <div className="text-red-600 text-xl mb-4">⚠️ User not found</div>
+              <p className="text-gray-600">Please log in to view your profile.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -91,8 +95,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="p-6">
+        <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">User Profile</h1>
@@ -237,6 +243,7 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
           </div>
+        </div>
         </div>
       </div>
     </div>
