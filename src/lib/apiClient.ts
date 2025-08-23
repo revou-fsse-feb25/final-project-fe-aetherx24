@@ -302,14 +302,30 @@ class ApiClient {
   }
 
   // Enrollments
-  async getMyEnrollments(): Promise<Course[]> {
-    return this.request<Course[]>(API_ENDPOINTS.ENROLLMENTS.MY_ENROLLMENTS);
+  async getMyEnrollments(): Promise<Enrollment[]> {
+    return this.request<Enrollment[]>(API_ENDPOINTS.ENROLLMENTS.MY_ENROLLMENTS);
   }
 
   async createEnrollment(courseId: string): Promise<Enrollment> {
+    // Get user ID from localStorage or cookies
+    const userData = localStorage.getItem('user');
+    const user = userData ? JSON.parse(userData) : null;
+    
+    if (!user?.id) {
+      throw new Error('User not authenticated');
+    }
+    
+    const payload = { 
+      courseId,
+      studentId: user.id 
+    };
+    
+    console.log('🔍 API: Creating enrollment with payload:', payload);
+    console.log('🔍 API: Endpoint:', API_ENDPOINTS.ENROLLMENTS.CREATE);
+    
     return this.request<Enrollment>(API_ENDPOINTS.ENROLLMENTS.CREATE, {
       method: 'POST',
-      body: JSON.stringify({ courseId }),
+      body: JSON.stringify(payload),
     });
   }
 

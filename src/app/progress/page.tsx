@@ -18,11 +18,36 @@ export default function ProgressPage() {
     const fetchProgress = async () => {
       try {
         setLoading(true);
-        const [coursesData, gradesData] = await Promise.all([
+        const [enrollmentsData, gradesData] = await Promise.all([
           apiClient.getMyEnrollments(),
           apiClient.getAssignments().then(() => []) // Placeholder - replace with actual grades API
         ]);
-        setEnrolledCourses(coursesData);
+        
+        // Get course details for each enrollment
+        const coursesWithProgress = await Promise.all(
+          enrollmentsData.map(async (enrollment) => {
+            try {
+              const course = await apiClient.getCourse(enrollment.courseId);
+              return {
+                ...course,
+                progress: enrollment.progress,
+                enrollmentStatus: enrollment.status
+              };
+            } catch {
+              // If course fetch fails, create a minimal course object
+              return {
+                id: enrollment.courseId,
+                title: `Course ${enrollment.courseId}`,
+                subtitle: 'Course details unavailable',
+                status: 'active' as const,
+                progress: enrollment.progress,
+                enrollmentStatus: enrollment.status
+              };
+            }
+          })
+        );
+        
+        setEnrolledCourses(coursesWithProgress);
         setGrades(gradesData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load progress');

@@ -17,18 +17,22 @@ import {
   FileText,
   Video
 } from "lucide-react";
-import { Course, Module, Lesson } from "@/types";
+import { Course, Module, Lesson, Enrollment } from "@/types";
 import { apiClient } from "@/lib/apiClient";
+import { useAuth } from "@/hooks/useApi";
 
 export default function CourseDetailPage() {
   const params = useParams();
   const courseId = params.id as string;
+  const { user } = useAuth();
   
   const [course, setCourse] = useState<Course | null>(null);
   const [modules, setModules] = useState<Module[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [enrolling, setEnrolling] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
@@ -44,6 +48,17 @@ export default function CourseDetailPage() {
         setCourse(courseData);
         setModules(modulesData);
         setLessons(lessonsData);
+
+        // Check if user is enrolled in this course
+        if (user) {
+          try {
+            const enrollments = await apiClient.getMyEnrollments();
+            const userEnrollment = enrollments.find(enrollment => enrollment.courseId === courseId);
+            setEnrollment(userEnrollment || null);
+          } catch {
+            console.log('Could not fetch enrollment status');
+          }
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load course');
       } finally {
@@ -54,16 +69,26 @@ export default function CourseDetailPage() {
     if (courseId) {
       fetchCourseData();
     }
-  }, [courseId]);
+  }, [courseId, user]);
 
   const handleEnroll = async () => {
+    if (!user) {
+      alert('Please log in to enroll in courses');
+      return;
+    }
+
     try {
-      await apiClient.createEnrollment(courseId);
-      // Refresh course data to show enrollment status
-      const courseData = await apiClient.getCourse(courseId);
-      setCourse(courseData);
+      setEnrolling(true);
+      const newEnrollment = await apiClient.createEnrollment(courseId);
+      setEnrollment(newEnrollment);
+      
+      // Show success message
+      alert('Successfully enrolled in the course!');
     } catch (err) {
       console.error('Enrollment failed:', err);
+      alert('Failed to enroll in the course. Please try again.');
+    } finally {
+      setEnrolling(false);
     }
   };
 
@@ -113,7 +138,7 @@ export default function CourseDetailPage() {
     );
   }
 
-  const isEnrolled = course.progress !== undefined;
+  const isEnrolled = enrollment !== null;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -144,8 +169,8 @@ export default function CourseDetailPage() {
                 {course.status}
               </Badge>
               {!isEnrolled ? (
-                <Button onClick={handleEnroll} disabled={course.status !== 'active'}>
-                  Enroll Now
+                <Button onClick={handleEnroll} disabled={course.status !== 'active' || enrolling}>
+                  {enrolling ? 'Enrolling...' : 'Enroll Now'}
                 </Button>
               ) : (
                 <Button variant="outline">
@@ -156,13 +181,13 @@ export default function CourseDetailPage() {
           </div>
 
           {/* Progress Bar */}
-          {isEnrolled && (
+          {isEnrolled && enrollment && (
             <div className="bg-white p-4 rounded-lg border">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium">Course Progress</span>
-                <span className="text-sm text-gray-600">{course.progress}%</span>
+                <span className="text-sm text-gray-600">{enrollment.progress}%</span>
               </div>
-              <Progress value={course.progress} className="h-3" />
+              <Progress value={enrollment.progress} className="h-3" />
             </div>
           )}
         </div>
