@@ -92,6 +92,25 @@ export default function CourseDetailPage() {
     }
   };
 
+  const handleLessonClick = (lesson: Lesson) => {
+    if (!isEnrolled) {
+      alert('Please enroll in this course to access lessons');
+      return;
+    }
+
+    if (lesson.isLocked) {
+      alert('This lesson is locked. Complete previous lessons to unlock it.');
+      return;
+    }
+
+    // TODO: Navigate to lesson page or open lesson modal
+    // For now, show a placeholder message
+    alert(`Opening lesson: ${lesson.title}\n\nLesson functionality will be implemented soon.`);
+    
+    // Future implementation might look like:
+    // router.push(`/courses/${courseId}/lessons/${lesson.id}`);
+  };
+
   const getLessonIcon = (type: string) => {
     switch (type) {
       case 'video':
@@ -181,7 +200,7 @@ export default function CourseDetailPage() {
                   {enrolling ? 'Enrolling...' : 'Enroll Now'}
                 </Button>
               ) : (
-                <Button variant="outline">
+                <Button variant="outline" onClick={() => setActiveTab("curriculum")}>
                   Continue Learning
                 </Button>
               )}
@@ -292,25 +311,53 @@ export default function CourseDetailPage() {
                           {lessons
                             .filter(lesson => lesson.moduleId === module.id)
                             .map((lesson, lessonIndex) => (
-                              <div key={lesson.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                              <div key={lesson.id} 
+                                className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-200 ${
+                                  lesson.isLocked 
+                                    ? 'bg-gray-50 border-gray-200 cursor-not-allowed opacity-60' 
+                                    : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-sm cursor-pointer'
+                                }`}
+                                onClick={() => !lesson.isLocked && handleLessonClick(lesson)}
+                              >
                                 <div className="flex items-center space-x-3">
-                                  {getLessonIcon(lesson.type)}
-                                  <span className="text-sm">
-                                    {lessonIndex + 1}. {lesson.title}
-                                  </span>
-                                  {lesson.duration && (
-                                    <span className="text-xs text-gray-500">
-                                      {lesson.duration}
+                                  <div className={`p-2 rounded-full ${
+                                    lesson.isCompleted 
+                                      ? 'bg-green-100' 
+                                      : lesson.isLocked 
+                                        ? 'bg-gray-100' 
+                                        : 'bg-blue-100'
+                                  }`}>
+                                    {getLessonIcon(lesson.type)}
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span className={`text-sm font-medium ${
+                                      lesson.isLocked ? 'text-gray-400' : 'text-gray-900'
+                                    }`}>
+                                      {lessonIndex + 1}. {lesson.title}
                                     </span>
-                                  )}
+                                    {lesson.duration && (
+                                      <span className="text-xs text-gray-500">
+                                        {lesson.duration}
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   {lesson.isCompleted ? (
-                                    <CheckCircle className="w-4 h-4 text-green-500" />
+                                    <div className="flex items-center space-x-1">
+                                      <CheckCircle className="w-5 h-5 text-green-500" />
+                                      <span className="text-xs text-green-600 font-medium">Complete</span>
+                                    </div>
                                   ) : lesson.isLocked ? (
-                                    <Lock className="w-4 h-4 text-gray-400" />
+                                    <div className="flex items-center space-x-1">
+                                      <Lock className="w-5 h-5 text-gray-400" />
+                                      <span className="text-xs text-gray-400">Locked</span>
+                                    </div>
                                   ) : (
-                                    <Play className="w-4 h-4 text-blue-500" />
+                                    <div className="flex items-center space-x-1">
+                                      <Play className="w-5 h-5 text-blue-500" />
+                                      <span className="text-xs text-blue-600 font-medium">Start</span>
+                                    </div>
                                   )}
                                 </div>
                               </div>

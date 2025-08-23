@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import DashboardHeader from './DashboardHeader';
 import CourseCard from './CourseCard';
@@ -10,6 +11,7 @@ import { Course } from '@/types';
 import { apiClient } from '@/lib/apiClient';
 
 export default function DashboardLayout() {
+    const router = useRouter();
     const { data: enrollments, loading: coursesLoading, error: coursesError } = useApi(() => apiClient.getMyEnrollments());
     const { data: userData, loading: userLoading, error: userError } = useApi(() => apiClient.getCurrentUser());
     const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
@@ -124,8 +126,8 @@ export default function DashboardLayout() {
     }
 
     const handleCourseClick = (course: Course) => {
-        // TODO: Navigate to course detail page
-        console.log('Course clicked:', course);
+        // Navigate to course detail page using Next.js router
+        router.push(`/courses/${course.id}`);
     };
 
     return (
