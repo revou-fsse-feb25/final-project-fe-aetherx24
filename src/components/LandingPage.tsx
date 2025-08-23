@@ -31,7 +31,7 @@ export function LandingPage() {
                <a href="/login">Login</a>
              </Button>
              <Button className="bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] hover:from-[#1A1D2E] hover:to-[#5DD8E8] text-white" asChild>
-               <a href="/login">Sign Up</a>
+               <a href="/register">Sign Up</a>
              </Button>
              <Button variant="ghost" size="sm" className="text-[#2B2E4A] hover:text-[#6EEBFF]">
                <Sun className="w-4 h-4" />
@@ -54,7 +54,7 @@ export function LandingPage() {
            </p>
            <div className="flex flex-col sm:flex-row gap-4 justify-center">
              <Button size="lg" className="bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] hover:from-[#1A1D2E] hover:to-[#5DD8E8] text-white text-lg px-8 py-3" asChild>
-               <a href="/login">Start Learning</a>
+               <a href="/register">Start Learning</a>
              </Button>
              <Button size="lg" variant="outline" className="border-[#2B2E4A] text-[#2B2E4A] hover:bg-[#C9C3D9] text-lg px-8 py-3">
                Learn More

@@ -418,7 +418,7 @@ class ApiClient {
     }
   }
 
-  async register(userData: { email: string; password: string; name: string }): Promise<RegisterResponse> {
+  async register(userData: { email: string; password: string; firstName: string; lastName: string }): Promise<RegisterResponse> {
     return this.request<RegisterResponse>(API_ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
       body: JSON.stringify(userData),
