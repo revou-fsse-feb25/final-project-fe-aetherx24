@@ -121,6 +121,54 @@ export function LoginForm() {
             <p className="text-green-600 mt-2">✓ Authenticated! Redirecting...</p>
           )}
         </div>
+
+        {/* Test Credentials Card */}
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="text-center mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 mb-1">Test Credentials (For Testing Only)</h3>
+            <p className="text-xs text-gray-500">Use these credentials to test different user roles</p>
+          </div>
+          
+          <div className="space-y-3">
+            {/* Student */}
+            <div className="flex items-center space-x-3 p-2 bg-white rounded border border-gray-200">
+              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 text-xs font-semibold">S</span>
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-xs font-medium text-gray-700">Student</div>
+                <div className="text-xs text-gray-500">student1@lms.com / student123</div>
+              </div>
+            </div>
+
+            {/* Teacher */}
+            <div className="flex items-center space-x-3 p-2 bg-white rounded border border-gray-200">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-green-600 text-xs font-semibold">T</span>
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-xs font-medium text-gray-700">Teacher</div>
+                <div className="text-xs text-gray-500">teacher1@lms.com / teacher123</div>
+              </div>
+            </div>
+
+            {/* Admin */}
+            <div className="flex items-center space-x-3 p-2 bg-white rounded border border-gray-200">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-purple-600 text-xs font-semibold">A</span>
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-xs font-medium text-gray-700">Admin</div>
+                <div className="text-xs text-gray-500">admin@lms.com / admin123</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-center justify-center space-x-1 text-xs text-amber-600 bg-amber-50 p-2 rounded border border-amber-200">
+            <span className="text-amber-600">⚠</span>
+            <span>These are demo credentials for testing different user roles</span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
