@@ -35,6 +35,12 @@ export default function CourseDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [enrolling, setEnrolling] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isClient, setIsClient] = useState(false);
+
+  // Set client-side flag to prevent hydration issues
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -46,9 +52,10 @@ export default function CourseDetailPage() {
           apiClient.getLessonsByCourse(courseId)
         ]);
         
+        // Ensure we have arrays for modules and lessons
         setCourse(courseData);
-        setModules(modulesData);
-        setLessons(lessonsData);
+        setModules(Array.isArray(modulesData) ? modulesData : []);
+        setLessons(Array.isArray(lessonsData) ? lessonsData : []);
 
         // Check if user is enrolled in this course
         if (user) {
@@ -62,6 +69,9 @@ export default function CourseDetailPage() {
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load course');
+        // Set empty arrays on error to prevent map errors
+        setModules([]);
+        setLessons([]);
       } finally {
         setLoading(false);
       }
@@ -123,6 +133,23 @@ export default function CourseDetailPage() {
         return <Play className="w-4 h-4" />;
     }
   };
+
+  // Prevent hydration issues by only rendering content on client side
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading course...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -290,12 +317,13 @@ export default function CourseDetailPage() {
               <CardHeader>
                 <CardTitle>Course Curriculum</CardTitle>
                 <CardDescription>
-                  {modules.length} modules • {lessons.length} lessons
+                  {Array.isArray(modules) ? modules.length : 0} modules • {Array.isArray(lessons) ? lessons.length : 0} lessons
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {modules.map((module, moduleIndex) => (
+                  {Array.isArray(modules) && modules.length > 0 ? (
+                    modules.map((module, moduleIndex) => (
                     <div key={module.id} className="border rounded-lg">
                       <div className="p-4 bg-gray-50 border-b">
                         <h3 className="font-medium text-gray-900">
@@ -308,7 +336,7 @@ export default function CourseDetailPage() {
                       
                       <div className="p-4">
                         <div className="space-y-2">
-                          {lessons
+                          {Array.isArray(lessons) && lessons
                             .filter(lesson => lesson.moduleId === module.id)
                             .map((lesson, lessonIndex) => (
                               <div key={lesson.id} 
@@ -365,7 +393,13 @@ export default function CourseDetailPage() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>No modules available for this course yet.</p>
+                      <p className="text-sm mt-2">Check back later for updated curriculum.</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
