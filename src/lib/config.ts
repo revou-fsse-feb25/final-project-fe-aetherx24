@@ -148,6 +148,7 @@ export const API_ENDPOINTS = {
     CREATE: getApiUrl('/submissions'),
     UPDATE: (id: string) => getApiUrl(`/submissions/${id}`),
     DELETE: (id: string) => getApiUrl(`/submissions/${id}`),
+    MY_SUBMISSIONS: getApiUrl('/submissions/my-submissions'),
   },
   
   // Grading System

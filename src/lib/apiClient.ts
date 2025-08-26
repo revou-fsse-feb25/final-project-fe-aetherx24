@@ -369,6 +369,10 @@ class ApiClient {
     return this.request<Submission[]>(API_ENDPOINTS.SUBMISSIONS.ALL);
   }
 
+  async getMySubmissions(): Promise<Submission[]> {
+    return this.request<Submission[]>(API_ENDPOINTS.SUBMISSIONS.MY_SUBMISSIONS);
+  }
+
   async getSubmission(id: string): Promise<Submission> {
     return this.request<Submission>(API_ENDPOINTS.SUBMISSIONS.BY_ID(id));
   }

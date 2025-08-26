@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, FileText, CheckCircle, AlertCircle } from "lucide-react";
+import { Calendar, Clock, FileText, CheckCircle, AlertCircle, Eye, Plus } from "lucide-react";
 import { Assignment } from "@/types";
 import { apiClient } from "@/lib/apiClient";
+import { useAuth } from "@/hooks/useApi";
 import { Navbar } from "@/components/Navbar";
 
 export default function AssignmentsPage() {
+  const router = useRouter();
+  const { user } = useAuth();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,8 +106,18 @@ export default function AssignmentsPage() {
         <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Course Assignments</h1>
-          <p className="text-gray-600">View and submit your course assignments</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Course Assignments</h1>
+              <p className="text-gray-600">View and submit your course assignments</p>
+            </div>
+            {(user?.role === 'teacher' || user?.role === 'admin') && (
+              <Button onClick={() => router.push('/assignments/create')}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create Assignment
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Assignments Grid */}
@@ -154,14 +168,21 @@ export default function AssignmentsPage() {
                 <div className="flex space-x-2">
                   <Button 
                     className="flex-1"
-                    disabled={assignment.status !== 'published'}
+                    onClick={() => router.push(`/assignments/${assignment.id}`)}
+                    variant="outline"
                   >
-                    {assignment.status === 'published' ? 'Submit Assignment' : 'View Details'}
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Details
                   </Button>
                   
-                  <Button variant="outline" size="sm">
-                    <FileText className="w-4 h-4" />
-                  </Button>
+                  {assignment.status === 'published' && user?.role === 'student' && (
+                    <Button 
+                      onClick={() => router.push(`/assignments/${assignment.id}`)}
+                      size="sm"
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>

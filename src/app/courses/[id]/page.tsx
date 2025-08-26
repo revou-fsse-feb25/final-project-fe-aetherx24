@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,15 +12,33 @@ import {
   Users, 
   Calendar, 
   Play, 
-  CheckCircle, 
-  Lock,
-  FileText,
-  Video
+  CheckCircle
 } from "lucide-react";
-import { Course, Module, Lesson, Enrollment } from "@/types";
+import { Course, Enrollment } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
 import { Navbar } from "@/components/Navbar";
+
+// Curriculum data structure from backend
+interface CurriculumData {
+  course: {
+    title: string;
+    description: string;
+  };
+  modules: Array<{
+    id: string;
+    title: string;
+    description: string;
+    order: number;
+    lessons: Array<{
+      id: string;
+      title: string;
+      description: string;
+      order: number;
+      duration?: number;
+    }>;
+  }>;
+}
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -28,8 +46,9 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   
   const [course, setCourse] = useState<Course | null>(null);
-  const [modules, setModules] = useState<Module[]>([]);
-  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [curriculum, setCurriculum] = useState<CurriculumData | null>(null);
+  const [curriculumLoading, setCurriculumLoading] = useState(false);
+  const curriculumFetchedRef = useRef(false);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,16 +65,8 @@ export default function CourseDetailPage() {
     const fetchCourseData = async () => {
       try {
         setLoading(true);
-        const [courseData, modulesData, lessonsData] = await Promise.all([
-          apiClient.getCourse(courseId),
-          apiClient.getModulesByCourse(courseId),
-          apiClient.getLessonsByCourse(courseId)
-        ]);
-        
-        // Ensure we have arrays for modules and lessons
+        const courseData = await apiClient.getCourse(courseId);
         setCourse(courseData);
-        setModules(Array.isArray(modulesData) ? modulesData : []);
-        setLessons(Array.isArray(lessonsData) ? lessonsData : []);
 
         // Check if user is enrolled in this course
         if (user) {
@@ -69,9 +80,6 @@ export default function CourseDetailPage() {
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load course');
-        // Set empty arrays on error to prevent map errors
-        setModules([]);
-        setLessons([]);
       } finally {
         setLoading(false);
       }
@@ -102,14 +110,87 @@ export default function CourseDetailPage() {
     }
   };
 
-  const handleLessonClick = (lesson: Lesson) => {
+  const loadCurriculum = useCallback(async (courseId: string) => {
+    try {
+      setCurriculumLoading(true);
+      
+      console.log('🔍 Loading curriculum for course:', courseId);
+      
+      // Use existing endpoints to build curriculum data
+      const [modulesResponse, lessonsResponse] = await Promise.all([
+        apiClient.getModulesByCourse(courseId),
+        apiClient.getLessonsByCourse(courseId)
+      ]);
+      
+      console.log('🔍 Modules response:', modulesResponse);
+      console.log('🔍 Lessons response:', lessonsResponse);
+      console.log('🔍 Modules type:', typeof modulesResponse);
+      console.log('🔍 Modules is array:', Array.isArray(modulesResponse));
+      
+      // Ensure we have arrays and handle potential errors
+      const modules = Array.isArray(modulesResponse) ? modulesResponse : [];
+      const lessons = Array.isArray(lessonsResponse) ? lessonsResponse : [];
+      
+      console.log('🔍 Processed modules:', modules);
+      console.log('🔍 Processed lessons:', lessons);
+      
+      // Build curriculum data structure
+      const curriculumData: CurriculumData = {
+        course: {
+          title: course?.title || '',
+          description: course?.description || ''
+        },
+        modules: modules.map(module => ({
+          id: module.id,
+          title: module.title,
+          description: module.description,
+          order: module.order,
+          lessons: []
+        }))
+      };
+      
+      // Add lessons to their respective modules
+      if (lessons.length > 0) {
+        curriculumData.modules = curriculumData.modules.map(module => ({
+          ...module,
+          lessons: lessons
+            .filter(lesson => lesson.moduleId === module.id)
+            .map(lesson => ({
+              id: lesson.id,
+              title: lesson.title,
+              description: lesson.description,
+              order: lesson.order,
+              duration: lesson.duration
+            }))
+        }));
+      }
+      
+      console.log('🔍 Final curriculum data:', curriculumData);
+      setCurriculum(curriculumData);
+    } catch (error) {
+      console.error('Error loading curriculum:', error);
+      setCurriculum(null);
+    } finally {
+      setCurriculumLoading(false);
+    }
+  }, [course]);
+
+  // Load curriculum when curriculum tab is selected (guarded to avoid refetch/flicker)
+  useEffect(() => {
+    if (
+      activeTab === "curriculum" &&
+      courseId &&
+      !curriculumFetchedRef.current &&
+      !curriculumLoading
+    ) {
+      curriculumFetchedRef.current = true;
+      loadCurriculum(courseId);
+    }
+  }, [activeTab, courseId, curriculumLoading, loadCurriculum]);
+
+  const handleLessonClick = (lesson: CurriculumData['modules'][0]['lessons'][0]) => {
     if (!isEnrolled) {
       alert('Please enroll in this course to access lessons');
-      return;
-    }
-
-    if (lesson.isLocked) {
-      alert('This lesson is locked. Complete previous lessons to unlock it.');
       return;
     }
 
@@ -121,18 +202,7 @@ export default function CourseDetailPage() {
     // router.push(`/courses/${courseId}/lessons/${lesson.id}`);
   };
 
-  const getLessonIcon = (type: string) => {
-    switch (type) {
-      case 'video':
-        return <Video className="w-4 h-4" />;
-      case 'document':
-        return <FileText className="w-4 h-4" />;
-      case 'quiz':
-        return <FileText className="w-4 h-4" />;
-      default:
-        return <Play className="w-4 h-4" />;
-    }
-  };
+
 
   // Prevent hydration issues by only rendering content on client side
   if (!isClient) {
@@ -313,96 +383,98 @@ export default function CourseDetailPage() {
 
           {/* Curriculum Tab */}
           <TabsContent value="curriculum" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Course Curriculum</CardTitle>
-                <CardDescription>
-                  {Array.isArray(modules) ? modules.length : 0} modules • {Array.isArray(lessons) ? lessons.length : 0} lessons
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {Array.isArray(modules) && modules.length > 0 ? (
-                    modules.map((module, moduleIndex) => (
-                    <div key={module.id} className="border rounded-lg">
-                      <div className="p-4 bg-gray-50 border-b">
-                        <h3 className="font-medium text-gray-900">
-                          Module {moduleIndex + 1}: {module.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {module.description}
-                        </p>
+            {curriculumLoading ? (
+              <Card>
+                <CardContent className="py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading curriculum...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : !curriculum ? (
+              <Card>
+                <CardContent className="py-12">
+                  <div className="text-center text-gray-500">
+                    <p>No curriculum available for this course yet.</p>
+                    <p className="text-sm mt-2">Check back later for updated curriculum.</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="curriculum-tab space-y-6">
+                {/* Course Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Course Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="course-overview">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2">{curriculum.course?.title || course.title}</h2>
+                      <p className="text-gray-700 mb-4">{curriculum.course?.description || course.description}</p>
+                      <div className="course-stats flex space-x-6 text-sm text-gray-600">
+                        <span className="flex items-center">
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          {curriculum.modules?.length || 0} Modules
+                        </span>
+                        <span className="flex items-center">
+                          <Play className="w-4 h-4 mr-2" />
+                          {curriculum.modules?.reduce((total: number, mod: CurriculumData['modules'][0]) => total + (mod.lessons?.length || 0), 0) || 0} Lessons
+                        </span>
                       </div>
-                      
-                      <div className="p-4">
-                        <div className="space-y-2">
-                          {Array.isArray(lessons) && lessons
-                            .filter(lesson => lesson.moduleId === module.id)
-                            .map((lesson, lessonIndex) => (
-                              <div key={lesson.id} 
-                                className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-200 ${
-                                  lesson.isLocked 
-                                    ? 'bg-gray-50 border-gray-200 cursor-not-allowed opacity-60' 
-                                    : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-sm cursor-pointer'
-                                }`}
-                                onClick={() => !lesson.isLocked && handleLessonClick(lesson)}
-                              >
-                                <div className="flex items-center space-x-3">
-                                  <div className={`p-2 rounded-full ${
-                                    lesson.isCompleted 
-                                      ? 'bg-green-100' 
-                                      : lesson.isLocked 
-                                        ? 'bg-gray-100' 
-                                        : 'bg-blue-100'
-                                  }`}>
-                                    {getLessonIcon(lesson.type)}
-                                  </div>
-                                  <div className="flex flex-col">
-                                    <span className={`text-sm font-medium ${
-                                      lesson.isLocked ? 'text-gray-400' : 'text-gray-900'
-                                    }`}>
-                                      {lessonIndex + 1}. {lesson.title}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Modules and Lessons */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Curriculum Content</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="curriculum-content space-y-6">
+                      {curriculum.modules?.map((module: CurriculumData['modules'][0], moduleIndex: number) => (
+                        <div key={module.id} className="module border rounded-lg">
+                          <div className="module-header p-4 bg-gray-50 border-b">
+                            <h3 className="text-lg font-medium text-gray-900">
+                              Module {module.order || moduleIndex + 1}: {module.title}
+                            </h3>
+                            <p className="text-sm text-gray-600 mt-1">{module.description}</p>
+                          </div>
+                          
+                          <div className="lessons-list p-4">
+                            {module.lessons?.map((lesson: CurriculumData['modules'][0]['lessons'][0], lessonIndex: number) => (
+                              <div key={lesson.id} className="lesson-item flex items-center justify-between p-3 border rounded-lg mb-2 hover:bg-gray-50 transition-colors">
+                                <div className="lesson-info flex items-center space-x-3">
+                                  <span className="lesson-number text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {module.order || moduleIndex + 1}.{lesson.order || lessonIndex + 1}
+                                  </span>
+                                  <span className="lesson-title text-sm font-medium text-gray-900">{lesson.title}</span>
+                                  {lesson.duration && (
+                                    <span className="text-xs text-gray-500">
+                                      {typeof lesson.duration === 'number' ? `${lesson.duration} min` : lesson.duration}
                                     </span>
-                                    {lesson.duration && (
-                                      <span className="text-xs text-gray-500">
-                                        {lesson.duration}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  {lesson.isCompleted ? (
-                                    <div className="flex items-center space-x-1">
-                                      <CheckCircle className="w-5 h-5 text-green-500" />
-                                      <span className="text-xs text-green-600 font-medium">Complete</span>
-                                    </div>
-                                  ) : lesson.isLocked ? (
-                                    <div className="flex items-center space-x-1">
-                                      <Lock className="w-5 h-5 text-gray-400" />
-                                      <span className="text-xs text-gray-400">Locked</span>
-                                    </div>
-                                  ) : (
-                                    <div className="flex items-center space-x-1">
-                                      <Play className="w-5 h-5 text-blue-500" />
-                                      <span className="text-xs text-blue-600 font-medium">Start</span>
-                                    </div>
                                   )}
+                                </div>
+                                <div className="lesson-actions">
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={() => handleLessonClick(lesson)}
+                                  >
+                                    View Lesson
+                                  </Button>
                                 </div>
                               </div>
                             ))}
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <p>No modules available for this course yet.</p>
-                      <p className="text-sm mt-2">Check back later for updated curriculum.</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </TabsContent>
 
           {/* Instructor Tab */}
