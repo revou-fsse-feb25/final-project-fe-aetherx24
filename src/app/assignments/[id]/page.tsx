@@ -408,52 +408,141 @@ export default function AssignmentDetailPage() {
                 </Card>
               )}
 
-              {/* Existing Submission Display */}
-              {submission && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Your Submission</CardTitle>
-                    <CardDescription>
-                      Submitted on {new Date(submission.submittedAt).toLocaleDateString()}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div>
-                        <Label className="text-sm font-medium">Content:</Label>
-                        <p className="mt-1 p-3 bg-gray-50 rounded-md text-gray-700">
-                          {submission.content}
-                        </p>
-                      </div>
-                      {submission.attachments && submission.attachments.length > 0 && (
-                        <div>
-                          <Label className="text-sm font-medium">Attachments:</Label>
-                          <div className="mt-1 space-y-2">
-                            {submission.attachments.map((attachment, index) => (
-                              <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded-md">
-                                <FileText className="w-4 h-4 text-gray-500" />
-                                <span className="text-sm text-gray-700">{attachment}</span>
-                                <Button size="sm" variant="outline">
-                                  <Download className="w-3 h-3 mr-1" />
-                                  Download
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {submission.grade !== undefined && (
-                        <div>
-                          <Label className="text-sm font-medium">Grade:</Label>
-                          <p className="mt-1 text-lg font-semibold text-green-600">
-                            {submission.grade} / {assignment.maxPoints || 'N/A'}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+                             {/* Existing Submission Display */}
+               {submission && (
+                 <Card>
+                   <CardHeader>
+                     <CardTitle>Your Submission</CardTitle>
+                     <CardDescription>
+                       Submitted on {new Date(submission.submittedAt).toLocaleDateString()}
+                     </CardDescription>
+                   </CardHeader>
+                   <CardContent>
+                     <div className="space-y-3">
+                       <div>
+                         <Label className="text-sm font-medium">Content:</Label>
+                         <p className="mt-1 p-3 bg-gray-50 rounded-md text-gray-700">
+                           {submission.content}
+                         </p>
+                       </div>
+                       {submission.attachments && submission.attachments.length > 0 && (
+                         <div>
+                           <Label className="text-sm font-medium">Attachments:</Label>
+                           <div className="mt-1 space-y-2">
+                             {submission.attachments.map((attachment, index) => (
+                               <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded-md">
+                                 <FileText className="w-4 h-4 text-gray-500" />
+                                 <span className="text-sm text-gray-700">{attachment}</span>
+                                 <Button size="sm" variant="outline">
+                                   <Download className="w-3 h-3 mr-1" />
+                                   Download
+                                 </Button>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       )}
+                       {submission.grade !== undefined && (
+                         <div>
+                           <Label className="text-sm font-medium">Grade:</Label>
+                           <p className="mt-1 text-lg font-semibold text-green-600">
+                             {submission.grade} / {assignment.maxPoints || 'N/A'}
+                           </p>
+                         </div>
+                       )}
+                     </div>
+                   </CardContent>
+                 </Card>
+               )}
+
+               {/* Teacher Grading Section */}
+               {user?.role === 'teacher' && (
+                 <Card>
+                   <CardHeader>
+                     <CardTitle>Grade Student Submissions</CardTitle>
+                     <CardDescription>
+                       Review and grade student work for this assignment
+                     </CardDescription>
+                   </CardHeader>
+                   <CardContent>
+                     <div className="space-y-4">
+                       {/* Mock student submissions for grading */}
+                       <div className="border rounded-lg p-4">
+                         <div className="flex items-center justify-between mb-3">
+                           <div>
+                             <h4 className="font-medium">Student: John Doe</h4>
+                             <p className="text-sm text-gray-500">Submitted: {new Date().toLocaleDateString()}</p>
+                           </div>
+                           <Badge variant="secondary">Pending Grade</Badge>
+                         </div>
+                         <div className="mb-3">
+                           <Label className="text-sm font-medium">Submission Content:</Label>
+                           <div className="mt-1 p-3 bg-gray-50 rounded-md">
+                             <p className="text-sm text-gray-700">
+                               &ldquo;I completed the JavaScript assignment focusing on ES6 features including arrow functions, 
+                               destructuring, and template literals. The code follows best practices and includes proper error handling.&rdquo;
+                             </p>
+                           </div>
+                         </div>
+                         <div className="flex items-center space-x-4">
+                           <div className="flex-1">
+                             <Label htmlFor="grade" className="text-sm font-medium">Grade (0-{assignment.maxPoints || 100})</Label>
+                             <input
+                               id="grade"
+                               type="number"
+                               min="0"
+                               max={assignment.maxPoints || 100}
+                               className="w-full p-2 border rounded-md mt-1"
+                               placeholder="Enter grade"
+                             />
+                           </div>
+                           <div className="flex-1">
+                             <Label htmlFor="feedback" className="text-sm font-medium">Feedback</Label>
+                             <textarea
+                               id="feedback"
+                               className="w-full p-2 border rounded-md mt-1"
+                               rows={3}
+                               placeholder="Provide feedback to the student"
+                             />
+                           </div>
+                         </div>
+                         <div className="mt-3 flex space-x-2">
+                           <Button className="flex-1" variant="outline">
+                             Save Draft
+                           </Button>
+                           <Button className="flex-1">
+                             Submit Grade
+                           </Button>
+                         </div>
+                       </div>
+
+                       <div className="border rounded-lg p-4">
+                         <div className="flex items-center justify-between mb-3">
+                           <div>
+                             <h4 className="font-medium">Student: Jane Smith</h4>
+                             <p className="text-sm text-gray-500">Submitted: {new Date(Date.now() - 86400000).toLocaleDateString()}</p>
+                           </div>
+                           <Badge variant="default">Graded: 85/100</Badge>
+                         </div>
+                         <div className="mb-3">
+                           <Label className="text-sm font-medium">Submission Content:</Label>
+                           <div className="mt-1 p-3 bg-gray-50 rounded-md">
+                             <p className="text-sm text-gray-700">
+                               &ldquo;Completed the assignment with good understanding of JavaScript fundamentals. 
+                               Used proper variable declarations and function syntax.&rdquo;
+                             </p>
+                           </div>
+                         </div>
+                         <div className="text-sm">
+                           <span className="font-medium">Grade:</span> 85/100
+                           <br />
+                           <span className="font-medium">Feedback:</span> &ldquo;Good work! Consider using more modern ES6 features next time.&rdquo;
+                         </div>
+                       </div>
+                     </div>
+                   </CardContent>
+                 </Card>
+               )}
             </div>
 
             {/* Sidebar */}

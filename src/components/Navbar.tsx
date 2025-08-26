@@ -38,6 +38,11 @@ export function Navbar() {
     { href: "/profile", label: "Profile", icon: User },
   ];
 
+  // Add teacher link if user is teacher
+  if (user?.role === 'teacher') {
+    navigationItems.push({ href: "/teacher", label: "Teacher Dashboard", icon: Shield });
+  }
+
   // Add admin link if user is admin
   if (user?.role === 'admin') {
     navigationItems.push({ href: "/admin", label: "Admin", icon: Shield });
