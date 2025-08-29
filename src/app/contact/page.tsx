@@ -14,7 +14,7 @@ import {
   CheckCircle,
   AlertCircle
 } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
+import { LandingNavbar } from "@/components/LandingNavbar";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -62,7 +62,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <LandingNavbar />
       
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] text-white py-20">

@@ -2,43 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Users, Award, CheckCircle, Sun, Facebook, Twitter, Instagram, Linkedin, Search, Sparkles, Star, BarChart3, Play } from "lucide-react";
+import { BookOpen, Users, Award, CheckCircle, Facebook, Twitter, Instagram, Linkedin, Search, Sparkles, Star, BarChart3, Play } from "lucide-react";
+import { LandingNavbar } from "@/components/LandingNavbar";
 
 export function LandingPage() {
   return (
     <div className="min-h-screen bg-[#F5F3E7] text-[#2B2E4A]">
-      {/* Header */}
-      <header className="px-6 py-4 border-b border-[#C9C3D9] bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">L</span>
-            </div>
-            <span className="text-xl font-bold text-[#2B2E4A]">Luminark</span>
-          </div>
-
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Features</a>
-            <a href="#about" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">About</a>
-            <a href="/contact" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Contact</a>
-          </nav>
-
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" className="border-[#2B2E4A] text-[#2B2E4A] hover:bg-[#C9C3D9]" asChild>
-              <a href="/login">Login</a>
-            </Button>
-            <Button className="bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] hover:from-[#1A1D2E] hover:to-[#5DD8E8] text-white" asChild>
-              <a href="/register">Sign Up</a>
-            </Button>
-            <Button variant="ghost" size="sm" className="text-[#2B2E4A] hover:text-[#6EEBFF]">
-              <Sun className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      <LandingNavbar />
 
       {/* Hero Section - Two Column Layout */}
       <section className="px-6 py-20 bg-gradient-to-br from-[#F5F3E7] via-[#E8E4D4] to-[#C9C3D9] relative overflow-hidden">
