@@ -2,6 +2,12 @@
 
 A modern Learning Management System built with Next.js 15, featuring a beautiful galaxy purple theme and comprehensive learning features.
 
+## 🚀 Live Demo
+
+**[🌐 View Live Application](https://final-project-fe-aetherx24-production.up.railway.app/)**
+
+Experience the full Luminark LMS platform with all features and functionality.
+
 ## Features
 
 - 🎨 **Beautiful UI**: Modern design with galaxy purple theme and grey backgrounds
