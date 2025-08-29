@@ -23,7 +23,7 @@ Welcome to the comprehensive documentation for the Luminark Learning Management 
 - **User Profile**: Personal information and account settings
 
 ### 👨‍🏫 Teacher Experience
-- **Teacher Dashboard**: Course management and student monitoring
+- **Teacher Dashboard**: Course management and student monitoring *(Screenshots Available)*
 - **Assignment Creation**: Building and publishing course assignments
 - **Grading Tools**: Assessment and feedback systems
 - **Student Analytics**: Performance tracking and insights

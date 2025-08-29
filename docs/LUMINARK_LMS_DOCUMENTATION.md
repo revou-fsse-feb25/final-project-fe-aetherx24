@@ -137,6 +137,18 @@ Teachers have access to comprehensive course management tools, student progress 
 - **Student Communication**: Direct messaging and announcements
 - **Progress Reports**: Comprehensive student performance analysis
 
+### 📸 Teacher Dashboard Interface
+
+The teacher dashboard provides an intuitive interface for managing courses, monitoring students, and handling assignments. Here are the key screens:
+
+#### Main Teacher Dashboard
+![Teacher Dashboard Overview](../docs/teacher%20account/teacher%20dashboard%201.png)
+*The main teacher dashboard showing summary statistics, active courses, and quick actions for course management and grading.*
+
+#### Dashboard Statistics and Course Management
+![Teacher Dashboard Details](../docs/teacher%20account/teacher%20dashboard%202.png)
+*Detailed view of the teacher dashboard with course statistics, student information, and pending submissions that require grading.*
+
 ---
 
 ## 👨‍💼 Admin Experience
