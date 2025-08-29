@@ -38,10 +38,13 @@ export function Navbar() {
     { href: "/profile", label: "Profile", icon: User },
   ];
 
-  // Add teacher link if user is teacher
-  if (user?.role === 'teacher') {
-    navigationItems.push({ href: "/teacher", label: "Teacher Dashboard", icon: Shield });
-  }
+              // Add teacher links if user is teacher
+            if (user?.role === 'teacher') {
+              navigationItems.push({ href: "/teacher", label: "Teacher Dashboard", icon: Shield });
+              navigationItems.push({ href: "/teacher/courses/manage", label: "Manage Courses", icon: BookOpen });
+              navigationItems.push({ href: "/teacher/grading", label: "Grade Submissions", icon: FileText });
+              navigationItems.push({ href: "/teacher/analytics", label: "Student Analytics", icon: BarChart3 });
+            }
 
   // Add admin link if user is admin
   if (user?.role === 'admin') {

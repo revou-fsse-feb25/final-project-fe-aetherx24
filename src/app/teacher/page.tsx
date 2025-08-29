@@ -4,20 +4,22 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  BookOpen, 
-  FileText, 
-  Clock, 
-  CheckCircle, 
+import {
+  BookOpen,
+  FileText,
+  Clock,
+  CheckCircle,
   Eye,
   Star,
   Users,
-  TrendingUp
+  TrendingUp,
+  BarChart3
 } from "lucide-react";
 import { TeacherDashboardData } from "@/types";
 import { apiClient } from "@/lib/apiClient";
 import { useAuth } from "@/hooks/useApi";
 import { Navbar } from "@/components/Navbar";
+import Link from "next/link";
 
 
 
@@ -360,23 +362,47 @@ export default function TeacherDashboard() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button className="h-20" variant="outline">
-                <div className="text-center">
-                  <BookOpen className="w-8 h-8 mx-auto mb-2" />
-                  <div>View All Courses</div>
-                </div>
+              <Button className="h-20" variant="outline" asChild>
+                <Link href="/teacher/courses/manage">
+                  <div className="text-center">
+                    <BookOpen className="w-8 h-8 mx-auto mb-2" />
+                    <div>Manage Courses</div>
+                  </div>
+                </Link>
               </Button>
-              <Button className="h-20" variant="outline">
-                <div className="text-center">
-                  <FileText className="w-8 h-8 mx-auto mb-2" />
-                  <div>Create New Assignment</div>
-                </div>
+              <Button className="h-20" variant="outline" asChild>
+                <Link href="/teacher/courses/create">
+                  <div className="text-center">
+                    <BookOpen className="w-8 h-8 mx-auto mb-2" />
+                    <div>Create Course</div>
+                  </div>
+                </Link>
               </Button>
-              <Button className="h-20" variant="outline">
-                <div className="text-center">
-                  <Users className="w-8 h-8 mx-auto mb-2" />
-                  <div>Manage Students</div>
-                </div>
+              <Button className="h-20" variant="outline" asChild>
+                <Link href="/teacher/grading">
+                  <div className="text-center">
+                    <FileText className="w-8 h-8 mx-auto mb-2" />
+                    <div>Grade Submissions</div>
+                  </div>
+                </Link>
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <Button className="h-20" variant="outline" asChild>
+                <Link href="/teacher/analytics">
+                  <div className="text-center">
+                    <BarChart3 className="w-8 h-8 mx-auto mb-2" />
+                    <div>Student Analytics</div>
+                  </div>
+                </Link>
+              </Button>
+              <Button className="h-20" variant="outline" asChild>
+                <Link href="/assignments/create">
+                  <div className="text-center">
+                    <FileText className="w-8 h-8 mx-auto mb-2" />
+                    <div>Create Assignment</div>
+                  </div>
+                </Link>
               </Button>
             </div>
           </div>
