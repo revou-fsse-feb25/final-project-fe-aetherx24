@@ -142,8 +142,8 @@ export default function ContactPage() {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <Card className="shadow-xl border-0">
-              <CardHeader className="bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] text-white">
+            <Card className="shadow-xl border-0 rounded-2xl overflow-hidden">
+                             <CardHeader className="bg-gradient-to-r from-[#2B2E4A] to-[#6EEBFF] text-white text-center rounded-t-2xl">
                 <CardTitle className="text-2xl">Send us a Message</CardTitle>
                 <CardDescription className="text-blue-100">
                   Fill out the form below and we&apos;ll get back to you as soon as possible.
