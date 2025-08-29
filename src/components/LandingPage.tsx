@@ -22,7 +22,7 @@ export function LandingPage() {
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#features" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Features</a>
             <a href="#about" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">About</a>
-            <a href="#contact" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Contact</a>
+            <a href="/contact" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Contact</a>
           </nav>
 
           {/* Auth Buttons */}
@@ -332,7 +332,7 @@ export function LandingPage() {
               <h4 className="font-semibold mb-4 text-white">Support</h4>
               <ul className="space-y-2 text-[#C9C3D9]">
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Contact Us</a></li>
+                <li><a href="/contact" className="hover:text-[#6EEBFF] transition-colors">Contact Us</a></li>
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">FAQ</a></li>
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Community</a></li>
               </ul>
