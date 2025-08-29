@@ -29,10 +29,10 @@ Welcome to the comprehensive documentation for the Luminark Learning Management 
 - **Student Analytics**: Performance tracking and insights
 
 ### 👨‍💼 Admin Experience
-- **Admin Dashboard**: System administration and oversight
-- **User Management**: Account creation and role assignment
-- **System Monitoring**: Platform health and performance
-- **Content Management**: Quality control and compliance
+- **Admin Dashboard**: Full system control and monitoring (Screenshots Available)
+- **User Management**: Create, edit, and manage user accounts
+- **Role Assignment**: Assign and modify user roles and permissions
+- **System Monitoring**: Platform health and performance tracking
 
 ## 📖 How to Use This Documentation
 

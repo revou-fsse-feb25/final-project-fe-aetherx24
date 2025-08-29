@@ -162,6 +162,16 @@ Administrators have full system control with user management, system configurati
 - **Content Management**: Oversee course and assignment quality
 - **Analytics Dashboard**: System-wide usage and performance metrics
 
+### 📸 Admin Dashboard Interface
+
+The admin dashboard provides comprehensive system oversight with intuitive controls and real-time monitoring capabilities.
+
+![Admin Dashboard Overview](../docs/admin%20account/admin%20dashboard%201.png)
+*Admin Dashboard Overview - Main administrative interface showing system statistics, user management, and quick actions*
+
+![Admin Dashboard User Management](../docs/admin%20account/admin%20dashboard%202.png)
+*Admin Dashboard User Management - Detailed user management section with role assignment, search, and filtering capabilities*
+
 ---
 
 ## 🏗️ Technical Architecture
