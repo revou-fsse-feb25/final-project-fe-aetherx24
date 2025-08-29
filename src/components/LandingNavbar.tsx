@@ -22,6 +22,7 @@ export function LandingNavbar() {
                   <nav className="hidden md:flex items-center space-x-8">
             <Link href="/#features" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Features</Link>
             <Link href="/#about" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">About</Link>
+            <Link href="/educators" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Educators</Link>
             <Link href="/contact" className="hover:text-[#6EEBFF] transition-colors text-[#2B2E4A]">Contact</Link>
           </nav>
 

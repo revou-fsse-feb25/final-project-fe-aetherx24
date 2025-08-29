@@ -313,6 +313,7 @@ export function LandingPage() {
               <h4 className="font-semibold mb-4 text-white">Company</h4>
               <ul className="space-y-2 text-[#C9C3D9]">
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">About Us</a></li>
+                <li><a href="/educators" className="hover:text-[#6EEBFF] transition-colors">Become an Educator</a></li>
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Careers</a></li>
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-[#6EEBFF] transition-colors">Terms of Service</a></li>
