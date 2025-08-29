@@ -41,6 +41,21 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## 📚 Documentation
+
+For detailed information about the Luminark LMS platform, features, and usage, please refer to our comprehensive documentation:
+
+- **[📖 Complete System Documentation](docs/LUMINARK_LMS_DOCUMENTATION.md)** - Full system overview with screenshots
+- **[📁 Documentation Index](docs/README.md)** - Quick navigation and organization guide
+- **[📱 Screenshots & Visuals](docs/)** - Visual reference for all system features
+
+The documentation includes:
+- System architecture and technical details
+- User guides for students, teachers, and administrators
+- Screenshots of all major interfaces
+- Feature descriptions and capabilities
+- Getting started guides and best practices
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
